@@ -1,4 +1,6 @@
 import pandas as pd
+from params import DATA_PATH
 
 def load_data():
-    return pd.read_csv('raw_data/all_speeches.csv')
+    print("✅ data loaded")
+    return pd.read_csv(DATA_PATH)

@@ -9,11 +9,18 @@ def basic_cleaning(speech):
     for punctuation in string.punctuation:
         speech = speech.replace(punctuation, '')
     speech = speech.strip()
+
+    print("✅ data cleaned")
+
     return speech
 
+nlp = spacy.load('en_core_web_lg')
+
 def preproc(speeches):
-    nlp = spacy.load('en_core_web_lg')
     doc = nlp(speeches)
     filtered_tokens = [token.text for token in doc if not token.is_stop]
     lemmas = [token.lemma_ for token in doc if token.text in filtered_tokens]
+
+    print("✅ data preprocessed")
+
     return lemmas

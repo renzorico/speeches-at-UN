@@ -1,13 +1,13 @@
-
-from project.data import load_data
-from project.preprocessing import basic_cleaning, preproc
-from project.tfidf import tfidf_vec
+from data import load_data
+from preprocessing import basic_cleaning, preproc
+from tfidf import tfidf_vec
 
 data = load_data()
 
-df = data[:50]
-df.loc[:, 'cleaned'] = df['speeches'].apply(basic_cleaning)
-df.loc[:, 'preprocessed'] = df['cleaned'].apply(preproc)
+df = data[:10]
+df.loc[:, ['cleaned']] = df['speeches'].apply(basic_cleaning)
+df.loc[:, ['preprocessed']] = df['cleaned'].apply(preproc)
 
-results = tfidf_vec(df['preprocessed'])
-results.head()
+results = df['preprocessed'].apply(tfidf_vec)
+
+print(results)
