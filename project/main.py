@@ -7,7 +7,8 @@ data = load_data()
 df = data[:10]
 df.loc[:, ['cleaned']] = df['speeches'].apply(basic_cleaning)
 df.loc[:, ['preprocessed']] = df['cleaned'].apply(preproc)
-
+df.loc[:, ['preprocessed']] = df['preprocessed'].apply(" ".join)
+breakpoint()
 results = df['preprocessed'].apply(tfidf_vec)
 
 print(results)
