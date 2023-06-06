@@ -1,1 +1,11 @@
 spacy
+nltk
+pandas
+numpy
+string
+matplotlib.pyplot
+seaborn
+sklearn.feature_extraction.text
+tqdm
+bertopic
+streamlit
