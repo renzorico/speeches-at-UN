@@ -10,6 +10,7 @@ def basic_cleaning(speech):
     for punctuation in string.punctuation:
         speech = speech.replace(punctuation, '')
     speech = speech.strip()
+    speech.dropna(inplace=True)
 
     return speech
 
