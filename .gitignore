@@ -1,4 +1,6 @@
+notebooks/
+/notebooks
 raw_data/
-.python-version
 /raw_data
+.python-version
 .env
