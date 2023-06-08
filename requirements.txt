@@ -1,4 +1,5 @@
 spacy
+<<<<<<< HEAD
 nltk
 pandas
 numpy
@@ -9,3 +10,6 @@ sklearn.feature_extraction.text
 tqdm
 bertopic
 streamlit
+=======
+bertopic
+>>>>>>> d1c220702c5bbeb19c1c7f15524090ebdb846ecd
