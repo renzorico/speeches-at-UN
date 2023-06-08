@@ -31,10 +31,3 @@ def preproc(speeches):
     # entities = [ent.text for ent in doc.ents]
 
     return lemmas, # entities
-
-
-# from transformers import AutoTokenizer, AutoModelForTokenClassification
-
-# tokenizer = AutoTokenizer.from_pretrained("dslim/bert-base-NER")
-
-# model = AutoModelForTokenClassification.from_pretrained("dslim/bert-base-NER")
