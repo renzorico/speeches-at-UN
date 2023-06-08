@@ -34,7 +34,7 @@ def load_stopwords():
 @st.cache_data
 def load_count_topic_overtime(doc_topics, data):
     doc_topics = data[['year', 'country']].merge(doc_topics, left_index=True, right_index=True)
-    return doc_topics.groupby(['country', 'Name']).agg({'Document': 'count'}).reset_index().rename({'Document': 'count'}, axis=1)
+    return doc_topics.groupby(['country', 'Name', 'Top_n_words']).agg({'Document': 'count'}).reset_index().rename({'Document': 'count'}, axis=1)
 
 @st.cache_data
 def load_geodata():
