@@ -6,10 +6,10 @@ import streamlit as st
 
 @st.cache_data
 def load_data():
-    data = pd.read_csv('/root/code/renzorico/speeches-at-UN/raw_data/short_preprocessed_text.csv')
+    data = pd.read_csv('~/code/renzorico/speeches-at-UN/raw_data/speeches_with_paragraphs_processed_tt.csv')
     data.dropna(inplace=True)
-    df_topics = pd.read_csv('/root/code/renzorico/speeches-at-UN/raw_data/df_topics.csv')
-    doc_topics = pd.read_csv('/root/code/renzorico/speeches-at-UN/raw_data/doc_topics.csv')
+    df_topics = pd.read_csv('~/code/renzorico/speeches-at-UN/raw_data/df_topics.csv')
+    doc_topics = pd.read_csv('~/code/renzorico/speeches-at-UN/raw_data/doc_topics.csv')
     doc_topics.dropna(inplace=True)
     return df_topics, doc_topics, data
 

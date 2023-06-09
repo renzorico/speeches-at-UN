@@ -1,7 +1,7 @@
 import streamlit as st
 import pandas as pd
 
-corpus_path = "/root/code/renzorico/speeches-at-UN/raw_data/all_speeches.csv"
+corpus_path = "~/code/renzorico/speeches-at-UN/raw_data/all_speeches.csv"
 corpus_df = pd.read_csv(corpus_path)
 corpus_df = corpus_df[['year_iso', 'speeches']]
 corpus_df.dropna(subset=['speeches'], inplace=True)
