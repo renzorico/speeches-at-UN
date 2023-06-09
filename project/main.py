@@ -3,21 +3,29 @@ from preprocessing import basic_cleaning, preproc
 from tfidf import tfidf_vec
 import pandas as pd
 from bert import bertopic_model, bert_topics
+from params import DATA_PATH
 
-data = load_data()
-print("✅ data loaded")
-data = harmonize_data(data)
-print("✅ data harmonized")
+def data_control():
+    data = load_data()
+    print("✅ data loaded")
+    data = harmonize_data(data)
+    print("✅ data harmonized")
 
-df = data[:1000]
+    data.loc[:, ['cleaned']] = data['speeches'].apply(basic_cleaning)
+    print("✅ data cleaned")
+    data[['preprocessed', 'entities']] = data['speeches'].apply(preproc).apply(pd.Series)
+    print("✅ data preprocessed")
+    data.loc[:, ['preprocessed']] = data['preprocessed'].apply(" ".join)
 
-df.loc[:, ['cleaned']] = df['speeches'].apply(basic_cleaning)
-print("✅ data cleaned")
-df[['preprocessed', 'entities']] = df['speeches'].apply(preproc).apply(pd.Series)
-print("✅ data preprocessed")
-df.loc[:, ['preprocessed']] = df['preprocessed'].apply(" ".join)
+    return data
 
-model = bertopic_model(df['preprocessed'].dropna())
+data = pd.read_csv(DATA_PATH)
+
+# model --> BERT, embedding, umap, auto
+# model --> BERT, embedding, PCA, kmeans
+model = bertopic_model(data['preprocessed'].dropna())
 print("✅ initialized BERT model")
-df_topics, doc_topics = bert_topics(model, df['preprocessed'])
+df_topics, doc_topics = bert_topics(model, data['preprocessed'])
 print("✅ created topic dataframes")
+
+# Save data in appropriate csv
