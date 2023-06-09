@@ -29,14 +29,14 @@ def load_stopwords():
     return stop_words
 
 @st.cache_data
-def load_count_topic_overtime(doc_topics, data):
-    doc_topics = data[['year', 'country']].merge(doc_topics, left_index=True, right_index=True)
-    return doc_topics.groupby(['country', 'Name', 'Top_n_words']).agg({'Document': 'count'}).reset_index().rename({'Document': 'count'}, axis=1)
+def load_count_topic_overtime(data):
+    return data.groupby(['year', 'country', 'topic_num'])['topic'].transform('count')
 
 @st.cache_data
 def load_geodata():
-    _ , doc_topics, data = load_data()
-    feature_df = load_count_topic_overtime(doc_topics, data)
+    # Need to change it, be careful for repeated counts for one speech
+    data = load_data()
+    feature_df = load_count_topic_overtime(data)
     geojson_url = 'https://datahub.io/core/geo-countries/r/countries.geojson'
     geojson_data = requests.get(geojson_url).json()
     # Convert the GeoJson data to a GeoPandas DataFrame
