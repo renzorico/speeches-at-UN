@@ -1,7 +1,7 @@
 import string
-import spacy
-import pandas as pd
-import numpy as np
+# import spacy
+# import pandas as pd
+# import numpy as np
 
 def basic_cleaning(speech):
     speech = speech.replace('\n', ' ')
@@ -14,21 +14,21 @@ def basic_cleaning(speech):
 
     return speech
 
-# load without NER
-nlp = spacy.load("en_core_web_lg", exclude=["ner"])
+# # load without NER
+# nlp = spacy.load("en_core_web_lg", exclude=["ner"])
 
-# source NER from the same pipeline package as the last component
-nlp.add_pipe("ner", source=spacy.load('en_core_web_lg'))
+# # source NER from the same pipeline package as the last component
+# nlp.add_pipe("ner", source=spacy.load('en_core_web_lg'))
 
-# insert the entity ruler
-nlp.add_pipe("entity_ruler", before="ner")
+# # insert the entity ruler
+# nlp.add_pipe("entity_ruler", before="ner")
 
-def preproc(speeches):
-    doc = nlp(speeches)
-    stop_words = nlp.Defaults.stop_words
-    filtered_tokens = [token.text for token in doc if token.text.lower() not in stop_words]
-    lemmas = [token.lemma_ for token in doc if token.text in filtered_tokens]
+# def preproc(speeches):
+#     doc = nlp(speeches)
+#     stop_words = nlp.Defaults.stop_words
+#     filtered_tokens = [token.text for token in doc if token.text.lower() not in stop_words]
+#     lemmas = [token.lemma_ for token in doc if token.text in filtered_tokens]
 
-    return lemmas
+#     return lemmas
 
-def chunking(speeches):
+# # def chunking(speeches):
