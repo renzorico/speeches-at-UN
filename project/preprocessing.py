@@ -28,6 +28,7 @@ def preproc(speeches):
     stop_words = nlp.Defaults.stop_words
     filtered_tokens = [token.text for token in doc if token.text.lower() not in stop_words]
     lemmas = [token.lemma_ for token in doc if token.text in filtered_tokens]
-    # entities = [ent.text for ent in doc.ents]
 
-    return lemmas, # entities
+    return lemmas
+
+def chunking(speeches):
