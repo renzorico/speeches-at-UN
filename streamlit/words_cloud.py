@@ -36,3 +36,4 @@ def display_wordcloud(data_dict, stop_words, selected_year, selected_country):
         stop_words = stop_words + [selected_country]
         wordcloud = generate_specific_word_cloud(selected_year, selected_country, data_dict, stop_words)
     return wordcloud
+
