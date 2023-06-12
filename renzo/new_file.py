@@ -396,15 +396,15 @@ else:
 # Switch on the tooltip that appears when the user hovers the mouse over a chart element.
 story.set_feature('tooltip', True)
 
-# html(story._repr_html_(), width=width, height=height)
+html(story._repr_html_(), width=width, height=height)
 
-# st.download_button('Download HTML export', story.to_html(), file_name=f'world-population-story-{sel_topic}.html', mime='text/html')
+st.download_button('Download HTML export', story.to_html(), file_name=f'world-population-story-{sel_topic}.html', mime='text/html')
 
-# st.header('Thanks for using the app! :heart_eyes:')
-# col1, col2 = st.columns(2)
-# with col1:
-# 	st.markdown('If you want to learn more about how it works, check out this [blog post](https://blog.streamlit.io/create-an-animated-data-story-with-ipyvizzu-and-streamlit/) on creating animated data stories with ipyvizzu and Streamlit. :chart_with_upwards_trend::film_frames::balloon:')
-# 	st.markdown('You can find the code for the app on this \n [GitHub repo](https://github.com/vizzu-streamlit/world-population-story)')
-# 	st.markdown('Visit our [homepage](https://vizzuhq.com) to learn more about our open-source charting and data storytelling tools.')
-# with col2:
-# 	st.markdown('![homepage [homepage](https://vizzuhq.com)](https://github.com/vizzuhq/vizzu-lib-doc/raw/main/docs/readme/infinite-60.gif)')
+st.header('Thanks for using the app! :heart_eyes:')
+col1, col2 = st.columns(2)
+with col1:
+	st.markdown('If you want to learn more about how it works, check out this [blog post](https://blog.streamlit.io/create-an-animated-data-story-with-ipyvizzu-and-streamlit/) on creating animated data stories with ipyvizzu and Streamlit. :chart_with_upwards_trend::film_frames::balloon:')
+	st.markdown('You can find the code for the app on this \n [GitHub repo](https://github.com/vizzu-streamlit/world-population-story)')
+	st.markdown('Visit our [homepage](https://vizzuhq.com) to learn more about our open-source charting and data storytelling tools.')
+with col2:
+	st.markdown('![homepage [homepage](https://vizzuhq.com)](https://github.com/vizzuhq/vizzu-lib-doc/raw/main/docs/readme/infinite-60.gif)')

@@ -2,3 +2,4 @@ raw_data/
 .python-version
 /raw_data
 *.ipynb
+.streamlit
