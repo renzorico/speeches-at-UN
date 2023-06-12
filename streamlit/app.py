@@ -14,9 +14,9 @@ def select_params(data_dict):
 def main():
     st.title("Data Analysis")
 
-    df_topics, doc_topics, data = load_data()
+    data = load_data()
     stop_words = load_stopwords()
-    data_dict = data.set_index(['year', 'country'])['cleaned'].to_dict()
+    data_dict = data.set_index(['year', 'country'])['speeches'].to_dict()
 
     selected_year, selected_country = select_params(data_dict)
 
@@ -27,6 +27,5 @@ def main():
     plt.imshow(wordcloud, interpolation='bilinear', cmap='YlOrBr')
     plt.axis("off")
     st.pyplot(plt)
-
 
 main()

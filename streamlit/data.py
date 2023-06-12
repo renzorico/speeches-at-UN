@@ -6,12 +6,9 @@ import streamlit as st
 
 @st.cache_data
 def load_data():
-    data = pd.read_csv('/root/code/renzorico/speeches-at-UN/raw_data/short_preprocessed_text.csv')
-    data.dropna(inplace=True)
-    df_topics = pd.read_csv('/root/code/renzorico/speeches-at-UN/raw_data/df_topics.csv')
-    doc_topics = pd.read_csv('/root/code/renzorico/speeches-at-UN/raw_data/doc_topics.csv')
-    doc_topics.dropna(inplace=True)
-    return df_topics, doc_topics, data
+    data = pd.read_csv('~/code/renzorico/speeches-at-UN/raw_data/data_st.csv')
+    data = data.dropna(subset='speeches')
+    return data
 
 @st.cache_data
 def load_stopwords():
@@ -32,14 +29,14 @@ def load_stopwords():
     return stop_words
 
 @st.cache_data
-def load_count_topic_overtime(doc_topics, data):
-    doc_topics = data[['year', 'country']].merge(doc_topics, left_index=True, right_index=True)
-    return doc_topics.groupby(['country', 'Name', 'Top_n_words']).agg({'Document': 'count'}).reset_index().rename({'Document': 'count'}, axis=1)
+def load_count_topic_overtime(data):
+    return data.groupby(['year', 'country', 'topic_num'])['topic'].transform('count')
 
 @st.cache_data
 def load_geodata():
-    _ , doc_topics, data = load_data()
-    feature_df = load_count_topic_overtime(doc_topics, data)
+    # Need to change it, be careful for repeated counts for one speech
+    data = load_data()
+    feature_df = load_count_topic_overtime(data)
     geojson_url = 'https://datahub.io/core/geo-countries/r/countries.geojson'
     geojson_data = requests.get(geojson_url).json()
     # Convert the GeoJson data to a GeoPandas DataFrame
