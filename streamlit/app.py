@@ -28,31 +28,5 @@ def main():
     plt.axis("off")
     st.pyplot(plt)
 
-    # # Display the topic counts as a bar plot
-    # st.subheader("Topic Document Counts")
-    # fig = px.bar(topic_counts, x='Topic', y='Document Count',
-    #              labels={'Topic': 'Topic', 'Document Count': 'Document Count'},
-    #              title="Topic Document Counts")
-
-    # fig.update_layout(width=800, height=500)
-
-    # # Add click event to the bar plot
-    # fig.update_traces(marker=dict(color='rgb(158,202,225)', opacity=0.6),
-    #                   selected_marker=dict(color='black'),
-    #                   unselected_marker=dict(color='rgb(158,202,225)', opacity=0.6),
-    #                   selected=dict(marker=dict(opacity=1)))
-    # fig.update_layout(clickmode='event+select')
-
-    # selected_topic = None
-
-    # # Check if a bar is clicked
-    # if st.plotly_chart(fig, use_container_width=True):
-    #     selected_data = st.plotly_chart(fig).to_dict().get('clickData')
-    #     if selected_data and selected_data['points']:
-    #         selected_topic = selected_data['points'][0]['x']
-
-    # if selected_topic:
-    #     st.subheader(f"Words for the topic: {selected_topic}")
-    #     display_topic_words(selected_topic, df_topics)
 
 main()
