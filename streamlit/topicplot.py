@@ -24,9 +24,8 @@ def select_info(data):
     return year_range, selected_countries
 
 
-def display_topics(doc_topics, data):
-    feature_df = data[['year', 'country']].merge(doc_topics, left_index=True, right_index=True)
-    feature_df = feature_df.groupby(['year','country', 'Name', 'Top_n_words']).agg({'Document': 'count'}).reset_index().rename({'Document': 'count'}, axis=1)
+def display_topics(data):
+    feature_df = data.groupby(['year','country','topic']).agg({'Document': 'count'}).reset_index().rename({'Document': 'count'}, axis=1)
     year_range, selected_countries = select_info(data)
     filtered_data = feature_df[(feature_df['year'] >= year_range[0]) & (feature_df['year'] <= year_range[1])]
     filtered_data = filtered_data.loc[filtered_data['country'].isin(selected_countries)]
