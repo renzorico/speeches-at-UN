@@ -1,17 +1,17 @@
 from wordcloud import WordCloud
 import streamlit as st
 
+
 '''
 Defines functions that are used in Streamlit app to generate WordsClouds
 '''
 
 
-
-def select_params(data_dict):
+def select_params(data_dict, key):
     years = sorted(list(set([key[0] for key in data_dict.keys()])))
     selected_year = st.selectbox("Select a year", years + ['Select All'])
     countries = sorted(list(set([str(key[1]) for key in data_dict.keys()])))
-    selected_country = st.selectbox("Select a country", countries + ['Select All'])
+    selected_country = st.selectbox("Select a country", countries + ['Select All'], key=key)
     return selected_year, selected_country
 
 def generate_merged_word_cloud(data, stop_words):

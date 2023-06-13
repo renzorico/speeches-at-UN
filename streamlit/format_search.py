@@ -1,7 +1,7 @@
 import pandas as pd
 import streamlit as st
 import re
-from data import run_query, BIT_QUERY
+from data import run_query, BIG_QUERY
 
 
 def split_extract(text, keyword):
@@ -20,7 +20,7 @@ def display_search(search_text):
     if st.button("Search"):
         # Filter the corpus for rows containing the search text
         query = f'''SELECT CONCAT(year, ' ', iso) as year_iso, speeches
-                FROM {BIT_QUERY}
+                FROM {BIG_QUERY}
                 WHERE speeches LIKE "% {search_text} %"
                 '''
         corpus_df = pd.DataFrame(run_query(query))
