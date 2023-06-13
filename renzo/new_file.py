@@ -5,7 +5,7 @@ from ipyvizzustory import Story, Slide, Step
 # import pathlib
 # import shutil
 # from bs4 import BeautifulSoup
-from app import run_query
+from run_query_f import run_query
 import ssl
 import streamlit as st
 
@@ -13,7 +13,7 @@ ssl._create_default_https_context = ssl._create_unverified_context
 
 st.set_page_config(page_title='Topics Evolution in UN Speeches', layout='centered')
 st.title('Topics Evolution in UN Speeches')
-st.header('How our priorities have changes throught time?')
+st.header('How have our priorities changed over time?')
 def inject_matamo():
     matamo_id = "matamo"
     matamo_js = """<script>
@@ -50,8 +50,7 @@ height=450
 
 # data = run_query()
 
-# initialize chart
-data = Data()
+
 # df = pd.read_csv('/home/ricorenzo/code/renzorico/speeches-at-UN/raw_data/data_st.csv')
 
 query_new = f'''SELECT year , topic, COUNT(country) as count FROM `lewagon-bootcamp-384011.production_dataset.speeches`
@@ -60,11 +59,8 @@ ORDER BY year ASC '''
 
 df = pd.DataFrame(run_query(query_new))
 st.dataframe(df)
-data.add_data_frame(df)
 #@title Create the story
-
 topics = df['topic'].unique()
-
 sel_topic = st.selectbox(
     'Select topic:',
     list(topics))
@@ -74,6 +70,9 @@ skip_intro = st.checkbox(
 
 df_topic = df[df['topic'] == sel_topic]
 
+# initialize chart
+data = Data()
+data.add_data_frame(df)
 # pop_max = int(df_topic[df_topic['year'] == 'Population'][['Medium','High','Low']].max().T.max()*1.1)
 
 # df_future = df_topic[df_topic['Period'] == 'Future']
@@ -85,7 +84,7 @@ df_topic = df[df['topic'] == sel_topic]
 # other_max = df_future_sum.max().max() * 1.1
 # other_min = df_future_sum.max().max() * -1.1
 
-topic_palette = ['#FE7B00FF','#FEBF25FF','#55A4F3FF','#91BF3BFF','#E73849FF','#948DEDFF']
+topic_palette = ['#001219','#005F73','#0A9396','#94D2BD','#E9D8A6','#EE9B00','#CA6702', '#BB3E03','#AE2012','#9B2226','#606C38', '#FEFAE0','#FFAFCC','#8650A5']
 topic_palette_str = ' '.join(topic_palette)
 
 topic_color = topic_palette[list(topics).index(sel_topic)]
@@ -136,13 +135,13 @@ if skip_intro:
 else:
     slide1 = Slide(
         Step(
-            Data.filter("record.count >= 5"),
+            df_topic,
             Config(
                 {
-                    'x':'Topics',
-                    'y': 'Count',
-                    'label': 'Count',
-                    'title': 'Topics through time',
+                    'x':'topic',
+                    'y': 'count',
+                    'label': 'count',
+                    'title': 'Topics over time',
                 }
             ),
             Style(style)
@@ -398,13 +397,13 @@ story.set_feature('tooltip', True)
 
 html(story._repr_html_(), width=width, height=height)
 
-st.download_button('Download HTML export', story.to_html(), file_name=f'world-population-story-{sel_topic}.html', mime='text/html')
+# st.download_button('Download HTML export', story.to_html(), file_name=f'world-population-story-{sel_topic}.html', mime='text/html')
 
 st.header('Thanks for using the app! :heart_eyes:')
-col1, col2 = st.columns(2)
-with col1:
-	st.markdown('If you want to learn more about how it works, check out this [blog post](https://blog.streamlit.io/create-an-animated-data-story-with-ipyvizzu-and-streamlit/) on creating animated data stories with ipyvizzu and Streamlit. :chart_with_upwards_trend::film_frames::balloon:')
-	st.markdown('You can find the code for the app on this \n [GitHub repo](https://github.com/vizzu-streamlit/world-population-story)')
-	st.markdown('Visit our [homepage](https://vizzuhq.com) to learn more about our open-source charting and data storytelling tools.')
-with col2:
-	st.markdown('![homepage [homepage](https://vizzuhq.com)](https://github.com/vizzuhq/vizzu-lib-doc/raw/main/docs/readme/infinite-60.gif)')
+# col1, col2 = st.columns(2)
+# with col1:
+# 	st.markdown('If you want to learn more about how it works, check out this [blog post](https://blog.streamlit.io/create-an-animated-data-story-with-ipyvizzu-and-streamlit/) on creating animated data stories with ipyvizzu and Streamlit. :chart_with_upwards_trend::film_frames::balloon:')
+# 	st.markdown('You can find the code for the app on this \n [GitHub repo](https://github.com/vizzu-streamlit/world-population-story)')
+# 	st.markdown('Visit our [homepage](https://vizzuhq.com) to learn more about our open-source charting and data storytelling tools.')
+# with col2:
+# 	st.markdown('![homepage [homepage](https://vizzuhq.com)](https://github.com/vizzuhq/vizzu-lib-doc/raw/main/docs/readme/infinite-60.gif)')
