@@ -1,16 +1,20 @@
 import streamlit as st
-import plotly.express as px
 import matplotlib.pyplot as plt
-from data import load_data, load_stopwords, format_df
 from words_cloud import display_wordcloud, select_params
+from data import run_query, BIT_QUERY
+import pandas as pd
+from data import load_stopwords
 
-data = load_data()
-data = format_df(data)
+
+
+query = f'''SELECT DISTINCT(year), DISTINCT(country), speeches
+            FROM {BIT_QUERY}
+            '''
+
+data = pd.DataFrame(run_query(query))
 stop_words = load_stopwords()
 data_dict = data.set_index(['year', 'country'])['speeches'].to_dict()
-selected_year, selected_country = select_params()
-
-query =
+selected_year, selected_country = select_params(data_dict)
 
 def wordcloud_main():
     st.title("Data Analysis")

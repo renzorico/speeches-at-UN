@@ -4,5 +4,4 @@ raw_data/
 /raw_data
 .python-version
 .env
-streamlit/.streamlit/
-streamlit/.streamlit
+/root/code/renzorico/speeches-at-UN/.streamlit/secrets.toml

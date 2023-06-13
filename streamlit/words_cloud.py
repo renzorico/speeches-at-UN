@@ -5,6 +5,8 @@ import streamlit as st
 Defines functions that are used in Streamlit app to generate WordsClouds
 '''
 
+
+
 def select_params(data_dict):
     years = sorted(list(set([key[0] for key in data_dict.keys()])))
     selected_year = st.selectbox("Select a year", years + ['Select All'])
