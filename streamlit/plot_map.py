@@ -21,16 +21,12 @@ def plot_geo_features(selected_topic, joined_gdf):
     get_elevation="count * 1000",
     get_line_color=[255, 255, 255],
     )
-
-
-
 # Set the initial view state
     view_state = pdk.ViewState(
     latitude=0,
     longitude=0,
     zoom=1,
     )
-
 # Create a Pydeck map
     r = pdk.Deck(layers=[layer], initial_view_state=view_state)
         # Render the map

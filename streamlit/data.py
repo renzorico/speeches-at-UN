@@ -1,14 +1,24 @@
-import pandas as pd
 from nltk.corpus import stopwords
-import requests
 import geopandas as gpd
 import streamlit as st
+from google.oauth2 import service_account
+from google.cloud import bigquery
+import os
 
-@st.cache_data
-def load_data():
-    data = pd.read_csv('~/code/renzorico/speeches-at-UN/raw_data/data_st.csv')
-    data = data.dropna(subset='speeches')
-    return data
+
+BIT_QUERY = os.environ.get('PROJECT_BITQUERY')
+
+credentials = service_account.Credentials.from_service_account_info(
+    st.secrets["gcp_service_account"]
+)
+client = bigquery.Client(credentials=credentials)
+
+@st.cache_data(ttl=600)
+def run_query(query):
+    query_job = client.query(query)
+    rows_raw = query_job.result()
+    rows = [dict(row) for row in rows_raw]  # Convert to list of dicts. Required for st.cache_data to hash the return value.
+    return rows
 
 @st.cache_data
 def load_stopwords():
@@ -27,20 +37,3 @@ def load_stopwords():
                     'international', 'well', 'like', 'area', 'take', 'end', 'rule', 'great']
     stop_words = stop_words + custom_stopwords
     return stop_words
-
-@st.cache_data
-def load_count_topic_overtime(data):
-    return data.groupby(['year', 'country', 'topic_num'])['topic'].transform('count')
-
-@st.cache_data
-def load_geodata():
-    # Need to change it, be careful for repeated counts for one speech
-    data = load_data()
-    feature_df = load_count_topic_overtime(data)
-    geojson_url = 'https://datahub.io/core/geo-countries/r/countries.geojson'
-    geojson_data = requests.get(geojson_url).json()
-    # Convert the GeoJson data to a GeoPandas DataFrame
-    gdf = gpd.GeoDataFrame.from_features(geojson_data["features"])
-    joined_gdf = gdf.set_index('ADMIN').join(feature_df.set_index('country'), how='left')
-    joined_gdf.dropna(subset=['count'], inplace=True)
-    return joined_gdf

@@ -1,12 +1,14 @@
-# import streamlit as st
-from line_graphtopics import generate_graph, select_topic
-from data import load_data
+from graph_formating import generate_graph, select_topic, select_country
+import streamlit as st
 
-data = load_data()
 
 def graph_main():
-    selected_topic = select_topic(data)
-    generate_graph(selected_topic, data)
+    selected_topic = select_topic()
+    selected_country = select_country()
+    if not selected_topic:
+        st.write('Please select a topic to plot.')
+    else:
+        generate_graph(selected_topic, selected_country)
 
 
 graph_main()
