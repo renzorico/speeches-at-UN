@@ -1,14 +1,12 @@
 import streamlit as st
 import matplotlib.pyplot as plt
 from words_cloud import display_wordcloud, select_params
-from data import run_query, BIG_QUERY
-import pandas as pd
-from data import load_stopwords, get_data
+from data import get_data_wordcloud
 
 
 def wordcloud_main():
     st.title("Data Analysis")
-    _, stop_words, data_dict = get_data()
+    _, stop_words, data_dict = get_data_wordcloud()
     selected_year, selected_country = select_params(data_dict, '2')
     error_message = 'There is no data for your selection. Please choose another selection.'
     wordcloud = display_wordcloud(data_dict, stop_words, selected_year, selected_country)
