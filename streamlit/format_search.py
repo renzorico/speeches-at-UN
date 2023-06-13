@@ -3,11 +3,10 @@ import streamlit as st
 import re
 import numpy as np
 
-def load_search_data():
-    corpus_path = "/root/code/renzorico/speeches-at-UN/raw_data/all_speeches.csv"
-    corpus_df = pd.read_csv(corpus_path)
-    corpus_df = corpus_df[['year_iso', 'speeches']]
-    return corpus_df.dropna(subset=['speeches'])
+
+query = '''
+'''
+
 
 def split_extract(text, keyword):
     # Find the start and end indices of the keyword occurrence in the text

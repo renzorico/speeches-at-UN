@@ -11,3 +11,4 @@ bertopic
 streamlit
 geopandas
 wordcloud
+google-cloud-bigquery==3.10.0
