@@ -1,11 +1,7 @@
 import pandas as pd
 import streamlit as st
 import re
-import numpy as np
-
-
-query = '''
-'''
+from data import run_query, BIT_QUERY
 
 
 def split_extract(text, keyword):
@@ -20,10 +16,16 @@ def split_extract(text, keyword):
         return extracted_text
     return 'None'
 
-def display_search(corpus_df, search_text):
+def display_search(search_text):
     if st.button("Search"):
         # Filter the corpus for rows containing the search text
-        corpus_df['lower_case_text'] = corpus_df['speeches'].apply(lambda x: x.lower())
+        query = f'''SELECT CONCAT(year, ' ', iso) as year_iso, speeches
+                FROM {BIT_QUERY}
+                WHERE speeches LIKE "% {search_text} %"
+                '''
+        corpus_df = pd.DataFrame(run_query(query))
+        st.dataframe(corpus_df)
+        corpus_df['lower_case_text'] = corpus_df.apply(lambda x: x['speeches'].lower(), axis= 1)
         search_results = corpus_df[corpus_df["lower_case_text"].str.contains(search_text.lower(), case=False)]
         search_results['search_result'] =  search_results["speeches"].apply(lambda x: split_extract(x, search_text))
         search_results = search_results.loc[search_results['search_result'] != 'None']
