@@ -18,9 +18,9 @@
 
 
 import streamlit as st
-from google.oauth2 import service_account
+# from google.oauth2 import service_account
 import pandas as pd
-from google.cloud import bigquery
+# from google.cloud import bigquery
 from run_query_f import run_query
 
 
