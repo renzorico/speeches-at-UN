@@ -1,5 +1,4 @@
 from nltk.corpus import stopwords
-import geopandas as gpd
 import streamlit as st
 from google.oauth2 import service_account
 from google.cloud import bigquery
@@ -41,21 +40,21 @@ def load_stopwords():
 
 @st.cache_data()
 def get_years():
-    query = f"SELECT DISTINCT year FROM {BIG_QUERY}"
+    query = f"SELECT DISTINCT year FROM {BIG_QUERY} ORDER BY year DESC"
     result = pd.DataFrame(run_query(query))
-    return result.year.values()
+    return result.year.values
 
 @st.cache_data()
 def get_countries():
     query = f"SELECT DISTINCT country FROM {BIG_QUERY} ORDER BY country"
     result = pd.DataFrame(run_query(query))
-    return result.country.values.tolist()
+    return result.country.values
 
 @st.cache_data()
 def get_topic():
-    query = f"SELECT DISTINCT topic FROM {BIG_QUERY}"
-    result = run_query(query)
-    return result.topic.values.tolist()
+    query = f"SELECT DISTINCT topic FROM {BIG_QUERY} ORDER BY topic"
+    result = pd.DataFrame(run_query(query))
+    return result.topic.values
 
 
 
@@ -66,7 +65,7 @@ GROUP BY year, country
 '''
 
 @st.cache_data
-def get_data():
+def get_data_wordcloud():
     data = pd.DataFrame(run_query(wordcloud_query))
     data.drop_duplicates(inplace=True)
     stop_words = load_stopwords()

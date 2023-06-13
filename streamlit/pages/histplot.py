@@ -1,5 +1,5 @@
 import streamlit as st
-from topicplot import display_topics
+from topicplot import display_topics, select_topic_hist
 
 
 # @st.cache_data
@@ -8,8 +8,8 @@ from topicplot import display_topics
 
 def hist_main():
     display_topics()
-    # words_list = select_topic_hist()
-    # st.write(words_list)
+    words_list = select_topic_hist()
+    st.write(words_list)
 
 
 hist_main()
