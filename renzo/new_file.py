@@ -136,13 +136,13 @@ if skip_intro:
 else:
     slide1 = Slide(
         Step(
-            Data.filter("record.Period === 'Past' && record.year === 'Population'"),
+            Data.filter("record.count >= 5"),
             Config(
                 {
-                    'x':'Year',
-                    'y': 'Medium',
-                    'label': 'Medium',
-                    'title': 'The Population of the World 1950-2020',
+                    'x':'Topics',
+                    'y': 'Count',
+                    'label': 'Count',
+                    'title': 'Topics through time',
                 }
             ),
             Style(style)
@@ -159,7 +159,7 @@ else:
                     'y': ['Medium','topic'],
                     'color': 'topic',
                     'label': None,
-                    'title': 'The Population of topics 1950-2020',
+                    'title': 'The Population of regions 1950-2020',
                 }
             ),
             Style({ 'plot.marker.colorPalette': topic_palette_str })
