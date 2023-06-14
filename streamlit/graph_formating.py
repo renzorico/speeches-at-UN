@@ -25,9 +25,9 @@ def generate_graph(selected_topic, selected_country):
     for each in selected_country:
         countrylist += f', "{each}"'
 
-    query_graph = f'''SELECT year , topic, COUNT(country) as count FROM {BIG_QUERY}
+    query_graph = f'''SELECT year , topic, country, COUNT(country) as count FROM {BIG_QUERY}
         WHERE topic IN (''' + filterlist[2:] + ')' + ''' AND country IN (''' + countrylist[2:] + ''')
-        GROUP BY year, topic
+        GROUP BY year, topic, country
         ORDER BY year ASC '''
 
     query_full = f'''SELECT year , topic, COUNT(country) as count FROM {BIG_QUERY}
