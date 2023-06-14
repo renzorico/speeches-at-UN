@@ -28,5 +28,21 @@ def plot_geo_features(df):
     st.plotly_chart(fig)
 
 
+def create_countries_plot(df, country_column, count_column):
+    gdf = load_geo()
+    joined_gdf = gdf.set_index('ADMIN').join(df.set_index(country_column), how='left')
+    # Create a Plotly choropleth map
+    fig = px.choropleth(
+        joined_gdf,
+        geojson=joined_gdf.geometry,
+        locations=joined_gdf.index,
+        color=count_column,
+        color_continuous_scale='greens',
+        range_color=(joined_gdf[count_column].min(), joined_gdf[count_column].max()),
+        projection='natural earth',
+    )
 
-# df.groupby('firm').agg({'comment': lambda x: list(x)[0:3]})
+    fig.update_geos(fitbounds="locations", visible=False)
+    fig.update_layout(margin={"r":0,"t":0,"l":0,"b":0})
+
+    st.plotly_chart(fig, use_container_width=True)

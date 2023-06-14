@@ -71,7 +71,7 @@ def get_countries():
 
 @st.cache_data()
 def get_topic():
-    query = f"SELECT DISTINCT topic FROM {BIG_QUERY} ORDER BY topic"
+    query = f"SELECT DISTINCT topic FROM {BIG_QUERY} WHERE topic != 'bla_bla' ORDER BY topic"
     result = pd.DataFrame(run_query(query))
     return result.topic.values
 
@@ -90,3 +90,8 @@ def get_data_wordcloud():
     stop_words = load_stopwords()
     data_dict = data.set_index(['year', 'country'])['merged_speeches'].to_dict()
     return data, stop_words, data_dict
+
+@st.cache_data()
+def load_umap():
+    df = pd.read_csv('data/umap.csv')
+    return df
