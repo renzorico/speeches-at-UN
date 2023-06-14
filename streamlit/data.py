@@ -97,5 +97,5 @@ def get_data_wordcloud():
 def load_umap():
     print(os.listdir())
 
-    df = pd.read_csv('umap.csv')
+    df = pd.read_csv('streamlit/umap.csv')
     return df
