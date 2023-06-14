@@ -2,10 +2,7 @@ spacy
 plotly
 pandas
 numpy
-matplotlib.pyplot
 seaborn
-sklearn.feature_extraction.text
-tqdm
 bertopic
 streamlit
 geopandas
