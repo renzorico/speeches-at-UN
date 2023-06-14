@@ -47,18 +47,14 @@ geo_query = f'''
             ORDER BY year ASC
             '''
 
-@st.cache_data()
-def load_geodata():
-    # Need to change it, be careful for repeated counts for one speech
-    feature_df = pd.DataFrame(run_query(geo_query))
-    # feature_df = load_count_topic_overtime(data)
+@st.cache_data(ttl=600)
+def load_geo():
     geojson_url = 'https://datahub.io/core/geo-countries/r/countries.geojson'
     geojson_data = requests.get(geojson_url).json()
+
     # Convert the GeoJson data to a GeoPandas DataFrame
     gdf = gpd.GeoDataFrame.from_features(geojson_data["features"])
-    joined_gdf = gdf.set_index('ADMIN').join(feature_df.set_index('country'), how='left')
-    joined_gdf.dropna(subset=['counts'], inplace=True)
-    return joined_gdf
+    return gdf
 
 
 @st.cache_data()
