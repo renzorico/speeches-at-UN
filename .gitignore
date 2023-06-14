@@ -1,2 +1,12 @@
+notebooks/
+/notebooks
 raw_data/
+<<<<<<< HEAD
 .python-version
+=======
+/raw_data
+.python-version
+.env
+/root/code/renzorico/speeches-at-UN/.streamlit/secrets.toml
+*.csv
+>>>>>>> first-exploratory-model-tfidf
