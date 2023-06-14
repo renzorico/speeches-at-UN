@@ -95,7 +95,6 @@ def get_data_wordcloud():
 
 @st.cache_data()
 def load_umap():
-    print(f'{os.listdir()}------------------------------------------------------------------------')
 
     df = pd.read_csv('streamlit/umap.csv')
     return df
