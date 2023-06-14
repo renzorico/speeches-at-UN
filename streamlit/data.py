@@ -49,6 +49,7 @@ geo_query = f'''
 
 @st.cache_data()
 def load_geodata():
+    
     # Need to change it, be careful for repeated counts for one speech
     feature_df = pd.DataFrame(run_query(geo_query))
     # feature_df = load_count_topic_overtime(data)
