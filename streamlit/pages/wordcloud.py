@@ -13,8 +13,8 @@ def wordcloud_main():
 
     if wordcloud != error_message:
         st.subheader("Word Cloud")
-        plt.figure(figsize=(10, 6))
-        plt.imshow(wordcloud, interpolation='bilinear', cmap='YlOrBr')
+        plt.figure(figsize=(70, 10))
+        plt.imshow(wordcloud, interpolation='bilinear')
         plt.axis("off")
         st.pyplot(plt)
     else:
