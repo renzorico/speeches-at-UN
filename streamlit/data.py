@@ -4,7 +4,8 @@ from google.oauth2 import service_account
 from google.cloud import bigquery
 import os
 import pandas as pd
-
+import requests
+import geopandas as gpd
 
 BIG_QUERY = os.environ.get('PROJECT_BIGQUERY')
 
@@ -37,6 +38,28 @@ def load_stopwords():
                     'international', 'well', 'like', 'area', 'take', 'end', 'rule', 'great', 'Mr']
     stop_words = stop_words + custom_stopwords
     return stop_words
+
+
+
+geo_query = f'''
+            SELECT year, country, topic, COUNT(speeches) as counts FROM `lewagon-bootcamp-384011.production_dataset.speeches`
+            GROUP BY year, country, topic
+            ORDER BY year ASC
+            '''
+
+@st.cache_data()
+def load_geodata():
+    # Need to change it, be careful for repeated counts for one speech
+    feature_df = pd.DataFrame(run_query(geo_query))
+    # feature_df = load_count_topic_overtime(data)
+    geojson_url = 'https://datahub.io/core/geo-countries/r/countries.geojson'
+    geojson_data = requests.get(geojson_url).json()
+    # Convert the GeoJson data to a GeoPandas DataFrame
+    gdf = gpd.GeoDataFrame.from_features(geojson_data["features"])
+    joined_gdf = gdf.set_index('ADMIN').join(feature_df.set_index('country'), how='left')
+    joined_gdf.dropna(subset=['counts'], inplace=True)
+    return joined_gdf
+
 
 @st.cache_data()
 def get_years():
