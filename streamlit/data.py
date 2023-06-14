@@ -42,12 +42,6 @@ def load_stopwords():
     return stop_words
 
 
-geo_query = f'''
-            SELECT year, country, topic, COUNT(speeches) as counts FROM `lewagon-bootcamp-384011.production_dataset.speeches`
-            GROUP BY year, country, topic
-            ORDER BY year ASC
-            '''
-
 @st.cache_data(ttl=600)
 def load_geo():
     geojson_url = 'https://datahub.io/core/geo-countries/r/countries.geojson'
