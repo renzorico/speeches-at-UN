@@ -1,30 +1,29 @@
 import streamlit as st
-from data import load_geodata
-from plot_map import select_topic, plot_geo_features
+from data import get_topic, run_query, get_years
+from plot_map import plot_geo_features
+import pandas as pd
+import numpy as np
 
-joined_gdf = load_geodata()
-
-query =
-
-@st.cache_data
-def load_count_topic_overtime(data):
-    return data.groupby(['year', 'country', 'topic_num'])['topic'].transform('count')
-
-def load_geodata():
-    # Need to change it, be careful for repeated counts for one speech
-    data = load_data()
-    data = format_df(data)
-    feature_df = load_count_topic_overtime(data)
-    geojson_url = 'https://datahub.io/core/geo-countries/r/countries.geojson'
-    geojson_data = requests.get(geojson_url).json()
-    # Convert the GeoJson data to a GeoPandas DataFrame
-    gdf = gpd.GeoDataFrame.from_features(geojson_data["features"])
-    joined_gdf = gdf.set_index('ADMIN').join(feature_df.set_index('country'), how='left')
-    joined_gdf.dropna(subset=['count'], inplace=True)
-    return joined_gdf
 
 def map_main():
-    selected_topic = select_topic(joined_gdf)
-    plot_geo_features(selected_topic, joined_gdf)
+    years = get_years()
+    years = [int(year) for year in years if isinstance(year, np.int64)]
+    all_years = [min(years), max(years)]
+    start_year, end_year = st.slider("Select a year range", min_value=min(all_years), max_value=max(all_years),
+                                     value=(2000, 2002))
+
+    selected_topic = st.selectbox('Select topic', get_topic())
+    geo_query = f'''
+            SELECT year, country, topic, COUNT(speeches) as counts FROM `lewagon-bootcamp-384011.production_dataset.speeches`
+            WHERE topic = "{selected_topic}"
+            AND year >= {start_year}
+            AND year <= {end_year}
+            GROUP BY year, country, topic
+            ORDER BY year ASC
+            '''
+    df = pd.DataFrame(run_query(geo_query))
+
+
+    plot_geo_features(df)
 
 map_main()

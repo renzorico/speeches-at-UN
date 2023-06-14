@@ -1,7 +1,7 @@
 import pandas as pd
 import streamlit as st
 import re
-from data import run_query, BIG_QUERY
+from data import run_query, BIG_QUERY, select_info
 
 
 
@@ -27,13 +27,23 @@ def split_extract(text, keyword):
 def display_search(search_text):
     if st.button("Search"):
         # Filter the corpus for rows containing the search text
-        query = f'''SELECT CONCAT(year, ' ', iso) as year_iso, year, country, speeches
+        query = f'''SELECT CONCAT(year, ' ', iso) as year_iso, year, country, speeches, topic
                 FROM {BIG_QUERY}
                 WHERE LOWER(speeches) LIKE "% {search_text.lower()} %"
                 OR LOWER(speeches) LIKE "%{search_text.lower()} %"
                 OR LOWER(speeches) LIKE "% {search_text.lower()}."
                 '''
+
+        # Remove None columns
+        # Debug country and year selection
+
         corpus_df = pd.DataFrame(run_query(query))
+        # year_range, selected_countries = select_info()
+        # filtered_data = corpus_df[(corpus_df['year'] >= year_range[0]) & (corpus_df['year'] <= year_range[1])]
+
+        # if selected_countries:
+        #     filtered_data = filtered_data[filtered_data['country'].isin(selected_countries)]
+
         if len(corpus_df) > 0:
             corpus_df['lower_case_text'] = corpus_df.apply(lambda x: x['speeches'].lower(), axis= 1)
             search_results = corpus_df[corpus_df["lower_case_text"].str.contains(search_text.lower(), case=False)]
@@ -42,7 +52,7 @@ def display_search(search_text):
 
             # Display the search results as a dataframe
             st.write("Search Results:")
-            st.dataframe(search_results[["year_iso", "search_result", "speeches"]])
+            st.dataframe(search_results[["year_iso", "search_result"]])
         else:
             st.warning('This word is not present in any speech.')
 

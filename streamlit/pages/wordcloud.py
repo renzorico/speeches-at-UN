@@ -5,7 +5,7 @@ from data import get_data_wordcloud
 
 
 def wordcloud_main():
-    st.title("Data Analysis")
+    st.title("WordCloud")
     _, stop_words, data_dict = get_data_wordcloud()
     selected_year, selected_country = select_params(data_dict, '2')
     error_message = 'There is no data for your selection. Please choose another selection.'

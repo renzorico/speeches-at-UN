@@ -4,6 +4,9 @@ from google.oauth2 import service_account
 from google.cloud import bigquery
 import os
 import pandas as pd
+import numpy as np
+import requests
+import geopandas as gpd
 
 
 BIG_QUERY = os.environ.get('PROJECT_BIGQUERY')
@@ -38,6 +41,26 @@ def load_stopwords():
     stop_words = stop_words + custom_stopwords
     return stop_words
 
+
+geo_query = f'''
+            SELECT year, country, topic, COUNT(speeches) as counts FROM `lewagon-bootcamp-384011.production_dataset.speeches`
+            GROUP BY year, country, topic
+            ORDER BY year ASC
+            '''
+
+@st.cache_data(ttl=600)
+def load_geo():
+    geojson_url = 'https://datahub.io/core/geo-countries/r/countries.geojson'
+    geojson_data = requests.get(geojson_url).json()
+
+    # Convert the GeoJson data to a GeoPandas DataFrame
+    gdf = gpd.GeoDataFrame.from_features(geojson_data["features"])
+    return gdf
+
+
+
+
+
 @st.cache_data()
 def get_years():
     query = f"SELECT DISTINCT year FROM {BIG_QUERY} ORDER BY year DESC"
@@ -58,6 +81,7 @@ def get_topic():
 
 
 
+
 wordcloud_query = f'''
 SELECT year, country, STRING_AGG(speeches, ' ') AS merged_speeches
 FROM {BIG_QUERY}
@@ -71,3 +95,17 @@ def get_data_wordcloud():
     stop_words = load_stopwords()
     data_dict = data.set_index(['year', 'country'])['merged_speeches'].to_dict()
     return data, stop_words, data_dict
+
+
+def select_info():
+    years = get_years()
+    years = [int(year) for year in years if isinstance(year, np.int64)]
+    all_years = [min(years), max(years)]
+    start_year, end_year = st.slider("Select a year range", min_value=min(all_years), max_value=max(all_years),
+                                     value=(min(all_years), max(all_years)))
+    year_range = [start_year, end_year]
+
+    countries = get_countries()
+    selected_countries = st.multiselect("Select country", countries)
+
+    return year_range, selected_countries
