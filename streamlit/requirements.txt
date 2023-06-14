@@ -2,7 +2,6 @@ spacy
 plotly
 pandas
 numpy
-string
 matplotlib.pyplot
 seaborn
 sklearn.feature_extraction.text
