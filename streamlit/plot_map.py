@@ -2,7 +2,7 @@ import pydeck as pdk
 import streamlit as st
 
 def select_topic(joined_gdf):
-    topics = joined_gdf['Name'].unique()
+    topics = joined_gdf['topic'].unique()
     selected_topic= st.selectbox("Select a topic", topics)
     return selected_topic
 
@@ -12,7 +12,7 @@ def plot_geo_features(selected_topic, joined_gdf):
     # Create a Pydeck layer for the GeoDataFrame
     layer = pdk.Layer(
     "GeoJsonLayer",
-    data=joined_gdf.loc[joined_gdf['Name'] == selected_topic],
+    data=joined_gdf.loc[joined_gdf['topic'] == selected_topic],
     opacity=0.8,
     get_fill_color="[(count <= {0}) * 255, (count > {0}) * 255, 0]".format(small_threshold),
     pickable=True,
