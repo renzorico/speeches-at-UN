@@ -1,8 +1,5 @@
 import streamlit as st
 st.set_page_config(layout="wide")
-import os
-st.write(f'{os.listdir()}------------------------------------------------------------------------')
-
 from format_search import display_search
 from data import get_topic
 
