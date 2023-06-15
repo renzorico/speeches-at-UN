@@ -23,7 +23,7 @@ with st.expander('Countries distribution'):
 
     st.plotly_chart(fig, use_container_width=True)
 
-countries = st.multiselect('Select countries', filtered.country.values)
+countries = st.multiselect('Select countries', list(set(df.country.values)))
 filtered_country = df.loc[(df.year==year) & (df.topic==topic) & (df.country.isin(countries))]
 fig_country = px.scatter(filtered_country, x='umap_1', y='umap_2', hover_name='country', color='continent', title='UMAP Embeddings of Speeches in 2019', size='count')
 # update layout to increase height
