@@ -11,9 +11,7 @@ import geopandas as gpd
 
 BIG_QUERY = '''`lewagon-bootcamp-384011.production_dataset.speeches`'''
 
-credentials = service_account.Credentials.from_service_account_info(
-    st.secrets["gcp_service_account"]
-)
+credentials = service_account.Credentials.from_service_account_info(st.secrets["gcp_service_account"])
 client = bigquery.Client(credentials=credentials)
 
 @st.cache_data(ttl=1200)
@@ -22,7 +20,6 @@ def run_query(query):
     rows_raw = query_job.result()
     rows = [dict(row) for row in rows_raw]  # Convert to list of dicts. Required for st.cache_data to hash the return value.
     return rows
-
 
 @st.cache_resource()
 def load_stopwords():
@@ -42,12 +39,6 @@ def load_stopwords():
     stop_words = stop_words + custom_stopwords
     return stop_words
 
-
-
-
-
-
-
 geo_query = f'''
             SELECT year, country, topic, COUNT(speeches) as counts FROM `lewagon-bootcamp-384011.production_dataset.speeches`
             GROUP BY year, country, topic
@@ -62,11 +53,6 @@ def load_geo():
     # Convert the GeoJson data to a GeoPandas DataFrame
     gdf = gpd.GeoDataFrame.from_features(geojson_data["features"])
     return gdf
-
-
-
-
-
 
 
 @st.cache_data()
@@ -105,7 +91,7 @@ FROM {BIG_QUERY}
 GROUP BY year, country
 '''
 
-@st.cache_data()
+@st.cache_resource()
 def get_data_wordcloud():
     data = pd.DataFrame(run_query(wordcloud_query))
     data.drop_duplicates(inplace=True)
