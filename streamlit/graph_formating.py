@@ -45,5 +45,6 @@ def generate_graph(selected_topic, selected_continent):
         sns.lineplot(data=filtered_df, x='year', y='count', hue='continent', ax=ax, palette="bright")
     else:
         sns.lineplot(data=filtered_df, x='year', y='count', hue='topic', ax=ax, palette="bright")
+
     ax.set_title('Evolution of Topics Over the Years')
     st.pyplot(fig)
