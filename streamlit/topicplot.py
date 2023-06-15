@@ -45,7 +45,6 @@ def display_topics():
     sorted_data = sorted_data.sort_values('topic')
 
     fig = px.bar(sorted_data, x='topic', y='count',barmode='group', color='country', color_discrete_sequence=px.colors.qualitative.Safe)
-    fig.update_layout(xaxis_tickangle=-45)
     fig.update_layout(
     xaxis_tickangle=-45,
     xaxis=dict(
@@ -62,7 +61,24 @@ def display_topics():
 # Go over this
 def select_topic_hist():
     df = get_best_words()
-    st.dataframe(df)
+    df['decade'] = df.decade.astype(int)
+    col1,col2, col3= st.columns(3)
+    with col1:
+        decade = st.slider('Select decade', min_value=int(df['decade'].min()),
+                           max_value=int(df['decade'].max()),step=10, value=2010, key='new')
+    with col2:
+        countries = get_countries()
+        selected_countries = st.multiselect("Select a Country:", countries,default=['Spain', 'France', 'Italy'], key='countries_words')
+    with col3:
+        topic = st.selectbox("Select topic", get_topic())
+
+
+    df = df.loc[(df.decade==decade)& (df.country.isin(selected_countries)) & (df.topic==topic)]
+    fig_topic = px.bar(df, x='ber_topic_words', y='country_count',barmode='group', color='country', color_discrete_sequence=px.colors.qualitative.Safe)
+    fig_topic.update_layout(xaxis_tickangle=-45)
+
+    st.plotly_chart(fig_topic, use_container_width=True)
+
     # query = f'''SELECT year, country, topic, ber_topic_words
     #     FROM {BIG_QUERY}
     #     '''

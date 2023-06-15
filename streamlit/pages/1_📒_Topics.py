@@ -6,7 +6,7 @@ st.set_page_config(layout="wide")
 def topics_main():
     st.header('How did the agenda change over time for continents')
 
-    with st.form('How did the agenda change over time for the continents'):
+    with st.form('form'):
 
         selected_topic = select_topic()
         st.session_state.selected_topic = selected_topic

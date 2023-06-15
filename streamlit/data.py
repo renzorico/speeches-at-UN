@@ -102,25 +102,24 @@ def get_data_wordcloud():
 
 @st.cache_resource()
 def get_best_words():
-    query = """WITH unsetted AS (
+    bertopic_query = """WITH unsetted AS (
     SELECT FLOOR(year / 10) * 10 as decade, topic,
-    SPLIT(REPLACE(REPLACE(REPLACE(REPLACE(CAST(top_5_words AS STRING), '[', ''), ']', ''), ',', ' '), "'", ''), ' ') as top_5_words_array,country
+    SPLIT(REPLACE(REPLACE(REPLACE(REPLACE(CAST(ber_topic_words AS STRING), '[', ''), ']', ''), ',', ' '), "'", ''), ' ') as ber_topic_words_array,country
     FROM `lewagon-bootcamp-384011.production_dataset.speeches`
-    WHERE topic != "bla_bla"),
-    unnested AS (
-        SELECT decade, topic, TRIM(word) as word, country
-        FROM unsetted, UNNEST(top_5_words_array) as word
-    )
-    SELECT decade, country, topic, word AS top_5_words, COUNT(country) as country_count
-    FROM unnested
-    GROUP BY decade, country, topic, word
-    LIMIT 10;
+    WHERE bert_prob = 1 AND topic != "bla_bla"),
+unnested AS (
+    SELECT decade, topic, TRIM(word) as word, country
+    FROM unsetted, UNNEST(ber_topic_words_array) as word
+)
+SELECT decade, country, topic, word AS ber_topic_words, COUNT(country) as country_count
+FROM unnested
+GROUP BY decade, country, topic, word
 
     """
-    # query = f"""SELECT * FROM {BIG_QUERY} LIMIT 2"""
 
-    data = pd.DataFrame(run_query(query))
-    data = data.dropna(subset=['top_5_words'], axis=0)
+    data = pd.DataFrame(run_query(bertopic_query))
+    data = data.dropna(subset=['ber_topic_words'], axis=0)
+    data = data.loc[data.ber_topic_words != '']
     return data
 
 
