@@ -18,21 +18,21 @@ max_words = 200
 color_map = 'copper_r'
 background = 'white'
 
-d = path.dirname('/root/code/renzorico/speeches-at-UN/streamlit/raw_data/')
-mask = np.array(Image.open(path.join(d, "trump.png")))
+# d = path.dirname('/root/code/renzorico/speeches-at-UN/streamlit/raw_data/')
+# mask = np.array(Image.open(path.join(d, "trump.png")))
 
 
 def generate_merged_word_cloud(data, stop_words):
     wordcloud = WordCloud(max_words=max_words, stopwords=stop_words, colormap=color_map,
                           prefer_horizontal=0.9,
-                          mask=mask,
+                        #   mask=mask,
                           background_color=background).generate(data)
     return wordcloud
 
 def generate_specific_word_cloud(year, country, data_dict, stop_words):
     wordcloud = WordCloud(max_words=max_words, stopwords=stop_words, colormap=color_map,
                           prefer_horizontal=0.9,
-                          mask=mask,
+                        #   mask=mask,
                           background_color=background).generate(data_dict[(year,country)])
     return wordcloud
 
