@@ -16,7 +16,7 @@ st.title('What countries were mentioned over time for each topic')
 def map_countries():
     query = """WITH unsetted AS (
     SELECT * FROM `lewagon-bootcamp-384011.production_dataset.speeches`,
-    UNNEST(countries_mentioned) as country_mentioned)
+    UNNEST(countries_recoded) as country_mentioned)
     SELECT year, topic,country_mentioned, COUNT(country) as country_count from unsetted
     WHERE topic != "bla_bla"
     GROUP BY year, topic,country_mentioned"""
