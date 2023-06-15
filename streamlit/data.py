@@ -100,11 +100,7 @@ def get_data_wordcloud():
 @st.cache_data()
 def load_umap():
 
-<<<<<<< HEAD
-    df = pd.read_csv('streamlit/raw_data/umap.csv')
-=======
     df = pd.read_csv('raw_data/umap.csv')
->>>>>>> daec9ec8dca5a61b9a951a82f4228bc6227a8a9e
     return df
 
 def select_info():
