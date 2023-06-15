@@ -13,14 +13,15 @@ with col1:
 with col2:
     topic = st.selectbox('Topic', get_topic(),index=13)
 
-filtered = df.loc[(df.year==year) & (df.topic==topic)]
-fig = px.scatter(filtered, x='umap_1', y='umap_2', hover_name='country', color='continent', title='UMAP Embeddings of Speeches in 2019', size='count')
-# update layout to increase height
-fig.update_layout(height=600)
-fig.update_xaxes(showgrid=False)
-fig.update_yaxes(showgrid=False)
+with st.expander():
+    filtered = df.loc[(df.year==year) & (df.topic==topic)]
+    fig = px.scatter(filtered, x='umap_1', y='umap_2', hover_name='country', color='continent', title='UMAP Embeddings of Speeches in 2019', size='count')
+    # update layout to increase height
+    fig.update_layout(height=600)
+    fig.update_xaxes(showgrid=False)
+    fig.update_yaxes(showgrid=False)
 
-st.plotly_chart(fig, use_container_width=True)
+    st.plotly_chart(fig, use_container_width=True)
 
 countries = st.multiselect('Select countries', filtered.country.values)
 filtered_country = df.loc[(df.year==year) & (df.topic==topic) & (df.country.isin(countries))]
