@@ -44,5 +44,4 @@ def select_topic_hist():
     topic = data[data['topic'] == selected_topic]
     words = topic['ber_topic_words'].tolist()
     word_list = ast.literal_eval(words[0])
-    st.write(word_list)
     return word_list
