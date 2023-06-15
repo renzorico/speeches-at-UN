@@ -1,10 +1,6 @@
 spacy
 nltk
-string
-matplotlib.pyplot
 seaborn
-sklearn.feature_extraction.text
-tqdm
 geopandas
 wordcloud
 google-cloud-bigquery==3.10.0
