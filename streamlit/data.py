@@ -16,7 +16,7 @@ credentials = service_account.Credentials.from_service_account_info(
 )
 client = bigquery.Client(credentials=credentials)
 
-@st.cache_resource()
+@st.cache_data(ttl=1200)
 def run_query(query):
     query_job = client.query(query)
     rows_raw = query_job.result()

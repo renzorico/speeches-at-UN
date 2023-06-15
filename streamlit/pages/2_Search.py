@@ -1,5 +1,5 @@
 import streamlit as st
-
+st.set_page_config(layout="wide")
 import matplotlib.pyplot as plt
 from format_search import display_search
 from words_cloud import display_wordcloud
