@@ -20,10 +20,12 @@ def map_countries():
     SELECT year, topic,country_mentioned, COUNT(country) as country_count from unsetted
     WHERE topic != "bla_bla"
     GROUP BY year, topic,country_mentioned"""
-    df = run_query(query)
+    df = pd.DataFrame(run_query(query))
 
-    df['country_mentioned'] = df.country_mentioned.apply(clean_country)
+    df['country_mentioned'] = df['country_mentioned'].apply(clean_country)
+
     df = df.loc[~df.country_mentioned.isin(to_drop)]
+
 
     top_countries = df.groupby('country_mentioned')[['year']].count().sort_values('year', ascending=False).head(100).reset_index().country_mentioned.values
 
@@ -31,7 +33,7 @@ def map_countries():
     years = [int(year) for year in years if isinstance(year, np.int64)]
     all_years = [min(years), max(years)]
     start_year, end_year = st.slider("Select a year range", min_value=min(all_years), max_value=max(all_years),
-                                     value=(min(all_years), max(all_years)))
+                                     value=(2010, 2012))
 
     topic = st.selectbox('Select topic', df.topic.unique())
 
