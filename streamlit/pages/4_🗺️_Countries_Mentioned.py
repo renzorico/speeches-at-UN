@@ -1,12 +1,10 @@
 import streamlit as st
 st.set_page_config(layout="wide")
-import seaborn as sns
 import pandas as pd
 from clean_countries import to_drop, clean_country
-import matplotlib.pyplot as plt
 from data import run_query
 from plot_map import create_countries_plot
-import plotly.express as px
+import plotly.graph_objects as go
 
 st.title('What countries were mentioned over time for each topic')
 
@@ -41,7 +39,6 @@ top_10 = list(set(df_agg.loc[df_agg.country_count>(threshold)].country_mentioned
 df_agg = df_agg.loc[df_agg.country_mentioned.isin(top_10)]
 
 
-import plotly.graph_objects as go
 
 # List of all countries
 all_countries = df_agg['country_mentioned'].unique()
