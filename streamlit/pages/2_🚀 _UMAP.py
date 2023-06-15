@@ -22,6 +22,19 @@ fig.update_yaxes(showgrid=False)
 
 st.plotly_chart(fig, use_container_width=True)
 
+countries = st.multiselect('Select countries', filtered.country.values)
+filtered_country = df.loc[(df.year==year) & (df.topic==topic) & (df.country.isin(countries))]
+fig_country = px.scatter(filtered_country, x='umap_1', y='umap_2', hover_name='country', color='continent', title='UMAP Embeddings of Speeches in 2019', size='count')
+# update layout to increase height
+fig_country.update_layout(height=600)
+fig_country.update_xaxes(showgrid=False)
+fig_country.update_yaxes(showgrid=False)
+
+st.plotly_chart(fig_country, use_container_width=True)
+
+
+
+
 
 st.header('Change of topics for each country over time')
 filtered_2 = df.loc[df.topic==topic]

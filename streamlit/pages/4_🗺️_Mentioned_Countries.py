@@ -56,3 +56,8 @@ def map_countries():
 show_map = st.button('Show Map')
 if show_map:
     map_countries()
+
+
+
+st.markdown(""" place for css
+            """, unsafe_allow_html=True)
