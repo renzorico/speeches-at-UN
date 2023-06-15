@@ -9,7 +9,7 @@ import requests
 import geopandas as gpd
 
 
-BIG_QUERY = os.environ.get('PROJECT_BIGQUERY')
+BIG_QUERY = '''`lewagon-bootcamp-384011.production_dataset.speeches`'''
 
 credentials = service_account.Credentials.from_service_account_info(
     st.secrets["gcp_service_account"]
