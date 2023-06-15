@@ -25,14 +25,12 @@ background = 'white'
 def generate_merged_word_cloud(data, stop_words):
     wordcloud = WordCloud(max_words=max_words, stopwords=stop_words, colormap=color_map,
                           prefer_horizontal=0.9,
-                        #   mask=mask,
                           background_color=background).generate(data)
     return wordcloud
 
 def generate_specific_word_cloud(year, country, data_dict, stop_words):
     wordcloud = WordCloud(max_words=max_words, stopwords=stop_words, colormap=color_map,
                           prefer_horizontal=0.9,
-                        #   mask=mask,
                           background_color=background).generate(data_dict[(year,country)])
     return wordcloud
 
