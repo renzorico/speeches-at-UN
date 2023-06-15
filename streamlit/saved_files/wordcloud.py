@@ -1,13 +1,18 @@
 import streamlit as st
 import matplotlib.pyplot as plt
-from words_cloud import display_wordcloud, select_params
-from data import get_data_wordcloud
+from words_cloud import display_wordcloud
+from data import get_data_wordcloud, get_countries, get_years
 
 
 def wordcloud_main():
-    st.title("Data Analysis")
+    st.title("WordCloud")
     _, stop_words, data_dict = get_data_wordcloud()
-    selected_year, selected_country = select_params(data_dict, '2')
+    # selected_year, selected_country = select_params(data_dict, '2')
+    years = get_years()
+    countries = get_countries()
+
+    selected_year = st.selectbox('Select a year', years)
+    selected_country = st.selectbox('Select a country', countries)
     error_message = 'There is no data for your selection. Please choose another selection.'
     wordcloud = display_wordcloud(data_dict, stop_words, selected_year, selected_country)
 

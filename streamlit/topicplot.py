@@ -1,5 +1,5 @@
 import streamlit as st
-from data import run_query, BIG_QUERY, get_countries, get_years, get_topic
+from data import run_query, BIG_QUERY, get_topic, select_info
 import pandas as pd
 import ast
 
@@ -7,22 +7,6 @@ import ast
 Defines functions to keep track of topics in texts and display them in histplots
 (counting texts by topic, zooming in on particular topics)
 '''
-
-
-def select_info():
-    years = get_years()
-    selected_year_min = st.selectbox("Select a min year", years)
-    selected_year_max = st.selectbox("Select a max year", years)
-    min_year = int(selected_year_min)
-    max_year = int(selected_year_max)
-    year_range = [min_year, max_year]
-
-    countries = get_countries()
-    selected_countries = st.multiselect("Select country", countries)
-
-    return year_range, selected_countries
-
-
 
 def display_topics():
     query = f'''
@@ -48,7 +32,7 @@ def display_topics():
     st.bar_chart(data=sorted_data, x='topic', y='count')
 
 
-
+# Go over this
 def select_topic_hist():
     query = f'''SELECT year, country, topic, top_5_words
         FROM {BIG_QUERY}

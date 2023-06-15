@@ -1,35 +1,44 @@
 from wordcloud import WordCloud
 import streamlit as st
-from matplotlib.colors import ListedColormap
-
+import numpy as np
+from PIL import Image
+from os import path
+import os
+# from matplotlib.colors import ListedColormap
 
 '''
 Defines functions that are used in Streamlit app to generate WordsClouds
 '''
 
-max_words = 30
+
+
 # colors = ['#003366', '#006633', '#660066', '#663300', '#333333', '#800000', '#000080', '#556B2F', '#003333', '#36454F']
 # custom_cmap = ListedColormap(colors)
+max_words = 200
 color_map = 'copper_r'
+background = 'white'
 
-def select_params(data_dict, key):
-    years = sorted(list(set([key[0] for key in data_dict.keys()])))
-    selected_year = st.selectbox("Select a year", years + ['Select All'])
-    countries = sorted(list(set([str(key[1]) for key in data_dict.keys()])))
-    selected_country = st.selectbox("Select a country", countries + ['Select All'], key=key)
-    return selected_year, selected_country
+# d = path.dirname('/root/code/renzorico/speeches-at-UN/streamlit/raw_data/')
+# mask = np.array(Image.open(path.join(d, "trump.png")))
+
 
 def generate_merged_word_cloud(data, stop_words):
     wordcloud = WordCloud(max_words=max_words, stopwords=stop_words, colormap=color_map,
                           prefer_horizontal=0.9,
-                          background_color='white').generate(data)
+                        #   mask=mask,
+                          background_color=background).generate(data)
     return wordcloud
 
 def generate_specific_word_cloud(year, country, data_dict, stop_words):
     wordcloud = WordCloud(max_words=max_words, stopwords=stop_words, colormap=color_map,
                           prefer_horizontal=0.9,
-                          background_color='white').generate(data_dict[(year,country)])
+                        #   mask=mask,
+                          background_color=background).generate(data_dict[(year,country)])
     return wordcloud
+
+
+
+# Need to change to integrate year_range
 
 def display_wordcloud(data_dict, stop_words, selected_year, selected_country):
     if selected_year == 'Select All' and selected_country == 'Select All':
