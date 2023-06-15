@@ -23,7 +23,7 @@ def run_query(query):
     rows = [dict(row) for row in rows_raw]  # Convert to list of dicts. Required for st.cache_data to hash the return value.
     return rows
 
-@st.cache_data
+@st.cache_data()
 def load_stopwords():
     stop_words = set(stopwords.words('english'))
     stop_words = list(stop_words)
@@ -42,6 +42,13 @@ def load_stopwords():
     return stop_words
 
 
+
+geo_query = f'''
+            SELECT year, country, topic, COUNT(speeches) as counts FROM `lewagon-bootcamp-384011.production_dataset.speeches`
+            GROUP BY year, country, topic
+            ORDER BY year ASC
+            '''
+
 @st.cache_data(ttl=600)
 def load_geo():
     geojson_url = 'https://datahub.io/core/geo-countries/r/countries.geojson'
@@ -50,9 +57,6 @@ def load_geo():
     # Convert the GeoJson data to a GeoPandas DataFrame
     gdf = gpd.GeoDataFrame.from_features(geojson_data["features"])
     return gdf
-
-
-
 
 
 @st.cache_data()
@@ -69,12 +73,15 @@ def get_countries():
 
 @st.cache_data()
 def get_topic():
-    query = f"SELECT DISTINCT topic FROM {BIG_QUERY} ORDER BY topic"
+    query = f"SELECT DISTINCT topic FROM {BIG_QUERY} WHERE topic != 'bla_bla' ORDER BY topic"
     result = pd.DataFrame(run_query(query))
     return result.topic.values
 
-
-
+@st.cache_data()
+def get_continent():
+    query = f"SELECT DISTINCT continent FROM {BIG_QUERY} ORDER BY continent"
+    result = pd.DataFrame(run_query(query))
+    return result.continent.values
 
 wordcloud_query = f'''
 SELECT year, country, STRING_AGG(speeches, ' ') AS merged_speeches
@@ -82,7 +89,7 @@ FROM {BIG_QUERY}
 GROUP BY year, country
 '''
 
-@st.cache_data
+@st.cache_data()
 def get_data_wordcloud():
     data = pd.DataFrame(run_query(wordcloud_query))
     data.drop_duplicates(inplace=True)
@@ -90,16 +97,20 @@ def get_data_wordcloud():
     data_dict = data.set_index(['year', 'country'])['merged_speeches'].to_dict()
     return data, stop_words, data_dict
 
+@st.cache_data()
+def load_umap():
+
+    df = pd.read_csv('/root/code/renzorico/speeches-at-UN/streamlit/raw_data/umap.csv')
+    return df
 
 def select_info():
     years = get_years()
     years = [int(year) for year in years if isinstance(year, np.int64)]
     all_years = [min(years), max(years)]
     start_year, end_year = st.slider("Select a year range", min_value=min(all_years), max_value=max(all_years),
-                                     value=(min(all_years), max(all_years)))
+                                     value=(min(years), max(years)))
     year_range = [start_year, end_year]
 
     countries = get_countries()
-    selected_countries = st.multiselect("Select country", countries)
-
+    selected_countries = st.multiselect("Select a Country:", countries)
     return year_range, selected_countries

@@ -1,7 +1,7 @@
 import pandas as pd
 import streamlit as st
 import re
-from data import run_query, BIG_QUERY, select_info
+from data import run_query, BIG_QUERY
 
 
 
@@ -24,40 +24,39 @@ def split_extract(text, keyword):
             return selected_sentences
 
 
-def display_search(search_text):
+def display_search(search_text, topic):
+
     if st.button("Search"):
+
         # Filter the corpus for rows containing the search text
-        query = f'''SELECT CONCAT(year, ' ', iso) as year_iso, year, country, speeches, topic
+        query = f'''SELECT country, topic, CONCAT(year, ' ', iso) as year_iso, year, country, speeches
                 FROM {BIG_QUERY}
                 WHERE LOWER(speeches) LIKE "% {search_text.lower()} %"
                 OR LOWER(speeches) LIKE "%{search_text.lower()} %"
                 OR LOWER(speeches) LIKE "% {search_text.lower()}."
                 '''
 
-        # Remove None columns
-        # Debug country and year selection
-
         corpus_df = pd.DataFrame(run_query(query))
-        # year_range, selected_countries = select_info()
-        # filtered_data = corpus_df[(corpus_df['year'] >= year_range[0]) & (corpus_df['year'] <= year_range[1])]
-
-        # if selected_countries:
-        #     filtered_data = filtered_data[filtered_data['country'].isin(selected_countries)]
-
+        corpus_df = corpus_df.loc[corpus_df.topic==topic]
         if len(corpus_df) > 0:
             corpus_df['lower_case_text'] = corpus_df.apply(lambda x: x['speeches'].lower(), axis= 1)
             search_results = corpus_df[corpus_df["lower_case_text"].str.contains(search_text.lower(), case=False)]
             search_results['search_result'] =  search_results["speeches"].apply(lambda x: split_extract(x, search_text))
             search_results = search_results.loc[search_results['search_result'] != 'None']
+            search_results = search_results.sort_values('year', ascending=False)
 
-            # Display the search results as a dataframe
-            st.write("Search Results:")
-            st.dataframe(search_results[["year_iso", "search_result"]])
+
+            st.info("Search Results:")
+            i = 1
+            for _ , each in search_results.iterrows():
+                list_of_sentences = each['search_result']
+                year = each['year_iso'].split(' ')[0]
+                country = each['country']
+                cleaned = [every for every in list_of_sentences if len(every) > 50 ]
+                joined_text = " ".join(cleaned)
+                highlighted_text = joined_text.replace(search_text, f'<span style="background-color: #FFFF00"><strong>{search_text}</strong></span>')
+
+                st.markdown(f'''<h5><strong>{i}</strong>. Speech of {country} in <u>{year}</u>:</h5> \n\n -  {highlighted_text}''', unsafe_allow_html=True)
+                i += 1
         else:
             st.warning('This word is not present in any speech.')
-
-
-            # i = 1
-            # for each in search_results.search_result:
-            #     st.text(f"{i} {each}")
-            #     i += 1

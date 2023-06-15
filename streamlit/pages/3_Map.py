@@ -10,7 +10,7 @@ def map_main():
     years = [int(year) for year in years if isinstance(year, np.int64)]
     all_years = [min(years), max(years)]
     start_year, end_year = st.slider("Select a year range", min_value=min(all_years), max_value=max(all_years),
-                                     value=(2000, 2002))
+                                     value=(min(years), max(years)))
 
     selected_topic = st.selectbox('Select topic', get_topic())
     geo_query = f'''

@@ -32,7 +32,7 @@ def display_topics():
     st.bar_chart(data=sorted_data, x='topic', y='count')
 
 
-
+# Go over this
 def select_topic_hist():
     query = f'''SELECT year, country, topic, top_5_words
         FROM {BIG_QUERY}
