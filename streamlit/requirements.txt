@@ -9,3 +9,4 @@ pandas
 numpy
 bertopic
 streamlit
+streamlit_player
