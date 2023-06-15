@@ -24,6 +24,6 @@ def map_main():
     df = pd.DataFrame(run_query(geo_query))
 
 
-    plot_geo_features(df)
+    # plot_geo_features(df)
 
 map_main()

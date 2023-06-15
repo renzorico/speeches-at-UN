@@ -46,7 +46,7 @@ def display_search(search_text, topic):
             search_results = search_results.sort_values('year', ascending=False)
 
 
-            with st.expander("Search Results:"):
+            with st.expander("Search Results:", expanded=True):
                 i = 1
                 for _ , each in search_results.iterrows():
                     list_of_sentences = each['search_result']

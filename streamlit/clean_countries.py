@@ -10,7 +10,7 @@ to_drop = ['the Member States','States', 'Geneva', 'New York',
            'the African States', 'Jammu', 'East Jerusalem','Havana',
            'Brussels', 'Territory', 'Copenhagen', 'African States',
            'Eritrea', 'New Delhi', 'Lusaka', 'Rio de Janeiro', 'Baghdad',
-           'Lisbon', 'Beijing', 'Czechoslovakia', 'Yugoslavia']
+           'Lisbon', 'Beijing']
 def exact_check(column_input, check_string, change):
     if column_input == check_string:
         country = column_input.replace(column_input,change)
@@ -20,6 +20,9 @@ def exact_check(column_input, check_string, change):
 
 def clean_country(country:str)->str:
     country = exact_check(country, 'the United States', states)
+    country = exact_check(country, 'Koreas', 'Korea')
+    country = exact_check(country, 'South Korea', 'Korea')
+    country = exact_check(country, 'North Korea', 'Korea')
     country = exact_check(country, 'the United States', states)
     country = exact_check(country, 'United States', states)
     country = exact_check(country, 'the United States of America', states)

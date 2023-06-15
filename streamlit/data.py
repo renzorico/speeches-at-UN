@@ -16,7 +16,7 @@ credentials = service_account.Credentials.from_service_account_info(
 )
 client = bigquery.Client(credentials=credentials)
 
-@st.cache_data()
+@st.cache_resource()
 def run_query(query):
     query_job = client.query(query)
     rows_raw = query_job.result()
@@ -24,7 +24,7 @@ def run_query(query):
     return rows
 
 
-@st.cache_data()
+@st.cache_resource()
 def load_stopwords():
     stop_words = set(stopwords.words('english'))
     stop_words = list(stop_words)
@@ -81,7 +81,7 @@ def get_countries():
     result = pd.DataFrame(run_query(query))
     return result.country.values
 
-@st.cache_data()
+@st.cache_resource()
 def get_topic():
     query = f"SELECT DISTINCT topic FROM {BIG_QUERY} WHERE topic != 'bla_bla' ORDER BY topic"
     result = pd.DataFrame(run_query(query))
