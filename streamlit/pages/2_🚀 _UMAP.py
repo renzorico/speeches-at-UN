@@ -12,11 +12,22 @@ with col1:
     year = st.slider('Year', min_value=1946, max_value=2021, value=2000)
 with col2:
     topic = st.selectbox('Topic', get_topic(),index=13)
-df = df.loc[(df.year==year) & (df.topic==topic)]
-fig = px.scatter(df, x='umap_1', y='umap_2', hover_name='country', color='continent', title='UMAP Embeddings of Speeches in 2019', size='count')
+
+filtered = df.loc[(df.year==year) & (df.topic==topic)]
+fig = px.scatter(filtered, x='umap_1', y='umap_2', hover_name='country', color='continent', title='UMAP Embeddings of Speeches in 2019', size='count')
 # update layout to increase height
 fig.update_layout(height=600)
 fig.update_xaxes(showgrid=False)
 fig.update_yaxes(showgrid=False)
 
 st.plotly_chart(fig, use_container_width=True)
+
+filtered_2 = df.loc[df.topic==topic]
+fig2= px.scatter_3d(filtered_2, x='year', y='umap_2',z = 'umap_1', hover_name='country', color='continent', title='UMAP Embeddings of Speeches in 2019', size='count')
+# update layout to increase height
+fig2.update_layout(height=800)
+
+fig2.update_xaxes(showgrid=False)
+fig2.update_yaxes(showgrid=False)
+
+st.plotly_chart(fig2, use_container_width=True)
