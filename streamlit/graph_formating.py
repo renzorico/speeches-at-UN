@@ -30,21 +30,21 @@ def generate_graph(selected_topic, selected_continent):
         GROUP BY year, topic, continent
         ORDER BY year ASC '''
 
-    query_full = f'''SELECT year , topic, COUNT(continent) as count FROM {BIG_QUERY}
+    query_full = f'''SELECT year , topic, continent, COUNT(continent) as count FROM {BIG_QUERY}
         WHERE topic IN (''' + filterlist[2:] + ')'  + '''
-        GROUP BY year, topic
+        GROUP BY year, topic, continent
         ORDER BY year ASC '''
 
-    if len(selected_continent) > 1:
+    if len(selected_continent) >= 1:
         filtered_df = pd.DataFrame(run_query(query_graph))
     else:
         filtered_df = pd.DataFrame(run_query(query_full))
 
     fig, ax = plt.subplots(figsize=(14, 6))
-    if len(selected_continent) > 1:
-        sns.lineplot(data=filtered_df, x='year', y='count', hue='continent', ax=ax, palette="bright")
-    else:
-        sns.lineplot(data=filtered_df, x='year', y='count', hue='topic', ax=ax, palette="bright")
+    # if len(selected_continent) > 1:
+    #     sns.lineplot(data=filtered_df, x='year', y='count', hue='continent', ax=ax, palette="bright")
+    # else:
+    sns.lineplot(data=filtered_df, x='year', y='count', hue='topic', ax=ax, palette="bright")
 
     ax.set_title('Evolution of Topics Over the Years')
     st.pyplot(fig)

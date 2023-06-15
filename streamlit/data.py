@@ -23,6 +23,11 @@ def run_query(query):
     rows = [dict(row) for row in rows_raw]  # Convert to list of dicts. Required for st.cache_data to hash the return value.
     return rows
 
+
+
+
+
+
 @st.cache_data()
 def load_stopwords():
     stop_words = set(stopwords.words('english'))
@@ -43,6 +48,10 @@ def load_stopwords():
 
 
 
+
+
+
+
 geo_query = f'''
             SELECT year, country, topic, COUNT(speeches) as counts FROM `lewagon-bootcamp-384011.production_dataset.speeches`
             GROUP BY year, country, topic
@@ -57,6 +66,11 @@ def load_geo():
     # Convert the GeoJson data to a GeoPandas DataFrame
     gdf = gpd.GeoDataFrame.from_features(geojson_data["features"])
     return gdf
+
+
+
+
+
 
 
 @st.cache_data()
@@ -83,6 +97,12 @@ def get_continent():
     result = pd.DataFrame(run_query(query))
     return result.continent.values
 
+
+
+
+
+
+
 wordcloud_query = f'''
 SELECT year, country, STRING_AGG(speeches, ' ') AS merged_speeches
 FROM {BIG_QUERY}
@@ -96,6 +116,12 @@ def get_data_wordcloud():
     stop_words = load_stopwords()
     data_dict = data.set_index(['year', 'country'])['merged_speeches'].to_dict()
     return data, stop_words, data_dict
+
+
+
+
+
+
 
 @st.cache_data()
 def load_umap():

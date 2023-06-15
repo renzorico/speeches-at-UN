@@ -34,7 +34,7 @@ def display_topics():
 
 # Go over this
 def select_topic_hist():
-    query = f'''SELECT year, country, topic, top_5_words
+    query = f'''SELECT year, country, topic, ber_topic_words
         FROM {BIG_QUERY}
         '''
     data = pd.DataFrame(run_query(query))
@@ -42,7 +42,7 @@ def select_topic_hist():
     selected_topic = st.selectbox("Select a topic", topics)
 
     topic = data[data['topic'] == selected_topic]
-    words = topic['top_5_words'].tolist()
+    words = topic['ber_topic_words'].tolist()
     word_list = ast.literal_eval(words[0])
     st.write(word_list)
     return word_list
