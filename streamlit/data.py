@@ -77,8 +77,6 @@ def get_topic():
     result = pd.DataFrame(run_query(query))
     return result.topic.values
 
-
-
 wordcloud_query = f'''
 SELECT year, country, STRING_AGG(speeches, ' ') AS merged_speeches
 FROM {BIG_QUERY}
