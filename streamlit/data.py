@@ -24,10 +24,6 @@ def run_query(query):
     return rows
 
 
-
-
-
-
 @st.cache_data()
 def load_stopwords():
     stop_words = set(stopwords.words('english'))

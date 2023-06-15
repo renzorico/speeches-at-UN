@@ -3,3 +3,5 @@ notebooks/
 .python-version
 .env
 /root/code/renzorico/speeches-at-UN/.streamlit/secrets.toml
+.envrc
+streamlit/__pycache__

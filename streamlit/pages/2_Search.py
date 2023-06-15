@@ -1,4 +1,5 @@
 import streamlit as st
+
 import matplotlib.pyplot as plt
 from format_search import display_search
 from words_cloud import display_wordcloud

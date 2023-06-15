@@ -3,7 +3,8 @@ import streamlit as st
 import numpy as np
 from PIL import Image
 from os import path
-import os
+import nltk
+nltk.download('stopwords')
 # from matplotlib.colors import ListedColormap
 
 '''
