@@ -22,8 +22,10 @@ fig.update_yaxes(showgrid=False)
 
 st.plotly_chart(fig, use_container_width=True)
 
+
+st.header('Change of topics for each country over time')
 filtered_2 = df.loc[df.topic==topic]
-fig2= px.scatter_3d(filtered_2, x='year', y='umap_2',z = 'umap_1', hover_name='country', color='continent', title='UMAP Embeddings of Speeches in 2019', size='count')
+fig2= px.scatter_3d(filtered_2, x='year', y='umap_2',z = 'umap_1', hover_name='country', color='continent', size='count')
 # update layout to increase height
 fig2.update_layout(height=800)
 
