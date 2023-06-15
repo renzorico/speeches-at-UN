@@ -13,7 +13,7 @@ with col1:
 with col2:
     topic = st.selectbox('Topic', get_topic(),index=13)
 
-with st.expander():
+with st.expander('Countries distribution'):
     filtered = df.loc[(df.year==year) & (df.topic==topic)]
     fig = px.scatter(filtered, x='umap_1', y='umap_2', hover_name='country', color='continent', title='UMAP Embeddings of Speeches in 2019', size='count')
     # update layout to increase height
