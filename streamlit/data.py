@@ -9,7 +9,7 @@ import requests
 import geopandas as gpd
 
 
-BIG_QUERY = os.environ.get('PROJECT_BIGQUERY')
+BIG_QUERY = '''`lewagon-bootcamp-384011.production_dataset.speeches`'''
 
 credentials = service_account.Credentials.from_service_account_info(
     st.secrets["gcp_service_account"]
@@ -100,7 +100,7 @@ def get_data_wordcloud():
 @st.cache_data()
 def load_umap():
 
-    df = pd.read_csv('/root/code/renzorico/speeches-at-UN/streamlit/raw_data/umap.csv')
+    df = pd.read_csv('~/ricorenzo/code/renzorico/speeches-at-UN/streamlit/raw_data/umap.csv')
     return df
 
 def select_info():

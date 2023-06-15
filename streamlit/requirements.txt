@@ -1,0 +1,12 @@
+spacy
+nltk
+seaborn
+geopandas
+wordcloud
+google-cloud-bigquery==3.10.0
+plotly
+pandas
+numpy
+bertopic
+streamlit
+streamlit_player
