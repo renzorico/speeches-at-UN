@@ -1,11 +1,10 @@
 from wordcloud import WordCloud
-from data import select_info
+import streamlit as st
 # from matplotlib.colors import ListedColormap
 
 '''
 Defines functions that are used in Streamlit app to generate WordsClouds
 '''
-
 
 
 max_words = 30

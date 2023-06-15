@@ -8,4 +8,3 @@ def main():
     display_search(search_text)
 
 main()
-
