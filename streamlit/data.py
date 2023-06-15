@@ -100,7 +100,7 @@ def get_data_wordcloud():
 @st.cache_data()
 def load_umap():
 
-    df = pd.read_csv('/home/ricorenzo/code/renzorico/speeches-at-UN/streamlit/raw_data/umap.csv')
+    df = pd.read_csv('~/ricorenzo/code/renzorico/speeches-at-UN/streamlit/raw_data/umap.csv')
     return df
 
 def select_info():
