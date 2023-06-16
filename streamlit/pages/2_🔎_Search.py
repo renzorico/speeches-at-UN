@@ -10,9 +10,9 @@ def search_main():
     st.title("Speech Search")
     col1, col2 = st.columns(2)
     with col1:
-        search_text = st.text_input("Enter the text to search:", value='war')
+        search_text = st.text_input("Enter the text to search:", value='cartel')
     with col2:
-        topic_selection = st.selectbox('Select topic:', get_topic())
+        topic_selection = st.selectbox('Select topic:', get_topic(), index=4)
     display_search(search_text,topic_selection)
 
 
@@ -22,8 +22,8 @@ def search_main():
     years = get_years()
     countries = get_countries()
 
-    selected_year = st.selectbox('Select a year:', years)
-    selected_country = st.selectbox('Select a country:', countries)
+    selected_year = st.selectbox('Select a year:', years,index=9)
+    selected_country = st.selectbox('Select a country:', countries, index=36)
     error_message = 'There is no data for your selection. Please choose another selection.'
     wordcloud = display_wordcloud(data_dict, stop_words, selected_year, selected_country)
 

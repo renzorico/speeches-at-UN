@@ -44,7 +44,7 @@ df_agg = df_agg.loc[df_agg.country_mentioned.isin(top_10)]
 all_countries = df_agg['country_mentioned'].unique()
 
 # Countries that should be visible at first
-selected_countries = ['Korea', 'Lebanon', 'Afghanistan']
+selected_countries = ['Afghanistan', 'Korea', 'Iraq', 'Vietnam']
 
 fig = go.Figure()
 
