@@ -14,7 +14,7 @@ with col2:
     topic = st.selectbox('Topic', get_topic(),index=1)
 
 filtered = df.loc[(df.year==year) & (df.topic==topic)]
-fig = px.scatter(filtered, x='umap_1', y='umap_2', hover_name='country', color='continent', title='UMAP Embeddings of Speeches in 2019', size='count')
+fig = px.scatter(filtered, x='umap_1', y='umap_2', hover_name='country', color='continent', title='UMAP Embeddings of Speeches', size='count')
 # update layout to increase height
 fig.update_layout(height=600)
 fig.update_xaxes(showgrid=False)
