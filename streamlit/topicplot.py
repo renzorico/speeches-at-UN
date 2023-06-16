@@ -27,7 +27,7 @@ def display_topics():
                            max_value=feature_df['decade'].max(),step=10, value=2010)
     with col2:
         countries = get_countries()
-        selected_countries = st.multiselect("Select a Country:", countries,default=['Spain', 'France', 'Italy'])
+        selected_countries = st.multiselect("Select a Country:", countries,default=['Russia', 'United States of America', 'China'])
 
 
 
@@ -68,7 +68,7 @@ def select_topic_hist():
                            max_value=int(df['decade'].max()),step=10, value=2010, key='new')
     with col2:
         countries = get_countries()
-        selected_countries = st.multiselect("Select a Country:", countries,default=['Russia', 'United States of America', 'China'], key='countries_words')
+        selected_countries = st.multiselect("Select a Country:", countries,default=['Spain', 'France', 'Italy'], key='countries_words')
     with col3:
         topic = st.selectbox("Select topic", get_topic())
 
