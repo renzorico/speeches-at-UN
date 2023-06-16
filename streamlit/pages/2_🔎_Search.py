@@ -22,7 +22,7 @@ def search_main():
     years = get_years()
     countries = get_countries()
 
-    selected_year = st.selectbox('Select a year:', years,index=9)
+    selected_year = st.selectbox('Select a year:', years,index=29)
     selected_country = st.selectbox('Select a country:', countries, index=36)
     error_message = 'There is no data for your selection. Please choose another selection.'
     wordcloud = display_wordcloud(data_dict, stop_words, selected_year, selected_country)
