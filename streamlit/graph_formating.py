@@ -3,7 +3,7 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 from data import run_query, BIG_QUERY, get_topic, get_continent
 import pandas as pd
-
+import plotly.express as px
 
 
 def select_topic():
@@ -16,11 +16,19 @@ def select_continent():
     selected_continent = st.multiselect('Continent', continents)
     return selected_continent
 
+<<<<<<< HEAD
 def generate_graph(selected_topic, selected_continent):
     filter_list = ''
+=======
+def generate_graph(selected_topic):
+    if not selected_topic:
+        return st.warning('Please select topic first!')
+    filterlist = ''
+>>>>>>> 04810480ff6a83e388608e152d3ff1afb8a43160
     for each in selected_topic:
         filter_list += f', "{each}"'
 
+<<<<<<< HEAD
     continent_list = ''
     for each in selected_continent:
         continent_list += f', "{each}"'
@@ -34,17 +42,16 @@ def generate_graph(selected_topic, selected_continent):
         WHERE topic IN (''' + filter_list[2:] + ')'  + '''
         GROUP BY year, topic
         ORDER BY year ASC '''
+=======
+    query_full = f'''SELECT year , topic, continent, COUNT(continent) as count FROM {BIG_QUERY}
+        WHERE topic IN (''' + filterlist[2:] + ')'  + '''
+        GROUP BY year, topic, continent
+        ORDER BY year ASC '''
 
-    if len(selected_continent) > 1:
-        filtered_df = pd.DataFrame(run_query(query_graph))
-    else:
-        filtered_df = pd.DataFrame(run_query(query_full))
+>>>>>>> 04810480ff6a83e388608e152d3ff1afb8a43160
 
-    fig, ax = plt.subplots(figsize=(14, 6))
-    if len(selected_continent) > 1:
-        sns.lineplot(data=filtered_df, x='year', y='count', hue='continent', ax=ax, palette="bright")
-    else:
-        sns.lineplot(data=filtered_df, x='year', y='count', hue='topic', ax=ax, palette="bright")
+    filtered_df = pd.DataFrame(run_query(query_full))
+    # filtered_df = filtered_df.groupby(['year', 'continent']).agg({'count':'sum'}).reset_index()
 
-    ax.set_title('Evolution of Topics Over the Years')
-    st.pyplot(fig)
+    fig = px.line(filtered_df, x='year', y='count', color='continent', line_dash='topic')
+    st.plotly_chart(fig, use_container_width=True)

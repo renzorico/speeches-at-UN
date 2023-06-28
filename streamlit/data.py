@@ -11,19 +11,17 @@ import geopandas as gpd
 
 BIG_QUERY = '''`lewagon-bootcamp-384011.production_dataset.speeches`'''
 
-credentials = service_account.Credentials.from_service_account_info(
-    st.secrets["gcp_service_account"]
-)
+credentials = service_account.Credentials.from_service_account_info(st.secrets["gcp_service_account"])
 client = bigquery.Client(credentials=credentials)
 
-@st.cache_data()
+@st.cache_data(ttl=1200)
 def run_query(query):
     query_job = client.query(query)
     rows_raw = query_job.result()
     rows = [dict(row) for row in rows_raw]  # Convert to list of dicts. Required for st.cache_data to hash the return value.
     return rows
 
-@st.cache_data()
+@st.cache_resource()
 def load_stopwords():
     stop_words = set(stopwords.words('english'))
     stop_words = list(stop_words)
@@ -40,8 +38,6 @@ def load_stopwords():
                     'international', 'well', 'like', 'area', 'take', 'end', 'rule', 'great', 'Mr']
     stop_words = stop_words + custom_stopwords
     return stop_words
-
-
 
 geo_query = f'''
             SELECT year, country, topic, COUNT(speeches) as counts FROM `lewagon-bootcamp-384011.production_dataset.speeches`
@@ -71,7 +67,7 @@ def get_countries():
     result = pd.DataFrame(run_query(query))
     return result.country.values
 
-@st.cache_data()
+@st.cache_resource()
 def get_topic():
     query = f"SELECT DISTINCT topic FROM {BIG_QUERY} WHERE topic != 'bla_bla' ORDER BY topic"
     result = pd.DataFrame(run_query(query))
@@ -83,19 +79,51 @@ def get_continent():
     result = pd.DataFrame(run_query(query))
     return result.continent.values
 
+
+
+
+
+
+
 wordcloud_query = f'''
 SELECT year, country, STRING_AGG(speeches, ' ') AS merged_speeches
 FROM {BIG_QUERY}
 GROUP BY year, country
 '''
 
-@st.cache_data()
+@st.cache_resource()
 def get_data_wordcloud():
     data = pd.DataFrame(run_query(wordcloud_query))
     data.drop_duplicates(inplace=True)
     stop_words = load_stopwords()
     data_dict = data.set_index(['year', 'country'])['merged_speeches'].to_dict()
     return data, stop_words, data_dict
+
+
+@st.cache_resource()
+def get_best_words():
+    bertopic_query = """WITH unsetted AS (
+    SELECT FLOOR(year / 10) * 10 as decade, topic,
+    SPLIT(REPLACE(REPLACE(REPLACE(REPLACE(CAST(ber_topic_words AS STRING), '[', ''), ']', ''), ',', ' '), "'", ''), ' ') as ber_topic_words_array,country
+    FROM `lewagon-bootcamp-384011.production_dataset.speeches`
+    WHERE bert_prob = 1 AND topic != "bla_bla"),
+unnested AS (
+    SELECT decade, topic, TRIM(word) as word, country
+    FROM unsetted, UNNEST(ber_topic_words_array) as word
+)
+SELECT decade, country, topic, word AS ber_topic_words, COUNT(country) as country_count
+FROM unnested
+GROUP BY decade, country, topic, word
+
+    """
+
+    data = pd.DataFrame(run_query(bertopic_query))
+    data = data.dropna(subset=['ber_topic_words'], axis=0)
+    data = data.loc[data.ber_topic_words != '']
+    return data
+
+
+
 
 @st.cache_data()
 def load_umap():

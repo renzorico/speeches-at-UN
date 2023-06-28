@@ -46,17 +46,17 @@ def display_search(search_text, topic):
             search_results = search_results.sort_values('year', ascending=False)
 
 
-            st.info("Search Results:")
-            i = 1
-            for _ , each in search_results.iterrows():
-                list_of_sentences = each['search_result']
-                year = each['year_iso'].split(' ')[0]
-                country = each['country']
-                cleaned = [every for every in list_of_sentences if len(every) > 50 ]
-                joined_text = " ".join(cleaned)
-                highlighted_text = joined_text.replace(search_text, f'<span style="background-color: #FFFF00"><strong>{search_text}</strong></span>')
+            with st.expander("Search Results:", expanded=True):
+                i = 1
+                for _ , each in search_results.iterrows():
+                    list_of_sentences = each['search_result']
+                    year = each['year_iso'].split(' ')[0]
+                    country = each['country']
+                    cleaned = [every for every in list_of_sentences if len(every) > 50 ]
+                    joined_text = " ".join(cleaned)
+                    highlighted_text = joined_text.replace(f'{ search_text }', f'<span style="background-color: #FFFF00"><strong> {search_text} </strong></span>')
 
-                st.markdown(f'''<h5><strong>{i}</strong>. Speech of {country} in <u>{year}</u>:</h5> \n\n -  {highlighted_text}''', unsafe_allow_html=True)
-                i += 1
+                    st.markdown(f'''<h5><strong>{i}</strong>. Speech of {country} in <u>{year}</u>:</h5> \n\n -  {highlighted_text}''', unsafe_allow_html=True)
+                    i += 1
         else:
             st.warning('This word is not present in any speech.')

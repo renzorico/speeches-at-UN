@@ -7,7 +7,6 @@ from data import get_data_wordcloud, get_countries, get_years
 def wordcloud_main():
     st.title("WordCloud")
     _, stop_words, data_dict = get_data_wordcloud()
-    # selected_year, selected_country = select_params(data_dict, '2')
     years = get_years()
     countries = get_countries()
 
