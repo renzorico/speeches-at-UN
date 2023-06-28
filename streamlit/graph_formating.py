@@ -17,21 +17,21 @@ def select_continent():
     return selected_continent
 
 def generate_graph(selected_topic, selected_continent):
-    filterlist = ''
+    filter_list = ''
     for each in selected_topic:
-        filterlist += f', "{each}"'
+        filter_list += f', "{each}"'
 
-    continentlist = ''
+    continent_list = ''
     for each in selected_continent:
-        continentlist += f', "{each}"'
+        continent_list += f', "{each}"'
 
     query_graph = f'''SELECT year , topic, continent, COUNT(continent) as count FROM {BIG_QUERY}
-        WHERE topic IN (''' + filterlist[2:] + ')' + ''' AND continent IN (''' + continentlist[2:] + ''')
+        WHERE topic IN (''' + filter_list[2:] + ')' + ''' AND continent IN (''' + continent_list[2:] + ''')
         GROUP BY year, topic, continent
         ORDER BY year ASC '''
 
     query_full = f'''SELECT year , topic, COUNT(continent) as count FROM {BIG_QUERY}
-        WHERE topic IN (''' + filterlist[2:] + ')'  + '''
+        WHERE topic IN (''' + filter_list[2:] + ')'  + '''
         GROUP BY year, topic
         ORDER BY year ASC '''
 
