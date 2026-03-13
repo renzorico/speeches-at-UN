@@ -1,22 +1,19 @@
 from wordcloud import WordCloud
 import streamlit as st
-from matplotlib.colors import ListedColormap
 
 
-'''
-Defines functions that are used in Streamlit app to generate WordsClouds
-'''
-
-max_words = 30
-# colors = ['#003366', '#006633', '#660066', '#663300', '#333333', '#800000', '#000080', '#556B2F', '#003333', '#36454F']
-# custom_cmap = ListedColormap(colors)
-color_map = 'copper_r'
+max_words = 50
+color_map = 'Dark2'
 
 def select_params(data_dict, key):
-    years = sorted(list(set([key[0] for key in data_dict.keys()])))
-    selected_year = st.selectbox("Select a year", years + ['Select All'])
-    countries = sorted(list(set([str(key[1]) for key in data_dict.keys()])))
-    selected_country = st.selectbox("Select a country", countries + ['Select All'], key=key)
+    years = sorted(list(set([k[0] for k in data_dict.keys()])))
+    default_year_idx = years.index(2016) if 2016 in years else len(years) - 1
+    selected_year = st.selectbox("Select a year", years + ['Select All'], index=default_year_idx)
+
+    countries = sorted(list(set([str(k[1]) for k in data_dict.keys()])))
+    default_country = 'United Kingdom'
+    default_country_idx = countries.index(default_country) if default_country in countries else 0
+    selected_country = st.selectbox("Select a country", countries + ['Select All'], key=key, index=default_country_idx)
     return selected_year, selected_country
 
 def generate_merged_word_cloud(data, stop_words):
