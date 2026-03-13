@@ -3,10 +3,13 @@ from bertopic import BERTopic
 import pandas as pd
 import numpy as np
 import pycountry
+import nltk
 from nltk.corpus import stopwords
 from sklearn.feature_extraction.text import CountVectorizer
 
- # umap_model = umap.UMAP(n_neighbors=15, n_components=10, metric='cosine', low_memory=False)
+nltk.download('stopwords', quiet=True)
+
+# umap_model = umap.UMAP(n_neighbors=15, n_components=10, metric='cosine', low_memory=False)
 
 countries = list(pycountry.countries)
 country_names = [country.name.lower() for country in countries]
@@ -31,15 +34,43 @@ custom_stopwords = ['united nations','united states', 'international community',
                     'world', 'herzegovina']
 
 
-def bertopic_model(text):
-    vectorizer_model = CountVectorizer(stop_words=custom_stopwords, ngram_range=(1, 3), min_df=5, max_features=200)
-    vectorized_text = vectorizer_model.fit_transform(text)
-    topic_model = BERTopic(top_n_words=10, min_topic_size=5, nr_topics='auto')
-    model = topic_model.fit_transform(vectorized_text)
-    return model
+def bertopic_model(text_list):
+    """
+    Fit BERTopic model on text list.
 
-def bert_topics(model, text):
-    topic_words = model.get_topic_freq().apply(lambda row: model.get_topic(row[0]), axis=1)
-    df_topics = pd.DataFrame({'Topic': topic_words.index, 'Words': topic_words.values})
-    doc_topics = model.get_document_info(text)
+    Args:
+        text_list: List of text strings (raw text, not vectorized)
+
+    Returns:
+        topic_model: Fitted BERTopic model
+    """
+    vectorizer_model = CountVectorizer(stop_words=custom_stopwords, ngram_range=(1, 3), min_df=5, max_features=200)
+    topic_model = BERTopic(vectorizer_model=vectorizer_model, language="english", min_topic_size=5, top_n_words=10)
+
+    # BERTopic expects raw text list, not vectorized
+    topics, probs = topic_model.fit_transform(text_list)
+    return topic_model, topics, probs
+
+
+def bert_topics(topic_model, topics):
+    """
+    Extract topics and document assignments from fitted BERTopic model.
+
+    Args:
+        topic_model: Fitted BERTopic model
+        topics: Topic assignments for documents
+
+    Returns:
+        df_topics: DataFrame with topic info
+        doc_topics: DataFrame with document-topic assignments
+    """
+    topic_freq = topic_model.get_topic_freq()
+    df_topics = pd.DataFrame({
+        'Topic_ID': topic_freq['Topic'].values,
+        'Frequency': topic_freq['Frequency'].values
+    })
+
+    # Create document-topic dataframe
+    doc_topics = pd.DataFrame({'Topic': topics})
+
     return df_topics, doc_topics

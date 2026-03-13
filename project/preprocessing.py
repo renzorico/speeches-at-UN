@@ -1,17 +1,19 @@
 import string
+import pandas as pd
 # import spacy
-# import pandas as pd
 # import numpy as np
 
 def basic_cleaning(speech):
+    """Clean individual speech text: remove digits, lowercase, remove punctuation"""
+    if not isinstance(speech, str) or pd.isna(speech):
+        return ''
+
     speech = speech.replace('\n', ' ')
     speech = ''.join(char for char in speech if not char.isdigit())
     speech = speech.lower()
     for punctuation in string.punctuation:
         speech = speech.replace(punctuation, '')
     speech = speech.strip()
-    speech.dropna(inplace=True)
-
     return speech
 
 # # load without NER

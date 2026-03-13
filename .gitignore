@@ -1,7 +1,28 @@
-notebooks/
-/notebooks
+# Data (too large for git)
 raw_data/
-/raw_data
-.python-version
+data/
+
+# Secrets & credentials
 .env
-/root/code/renzorico/speeches-at-UN/.streamlit/secrets.toml
+.envrc
+*.json
+.streamlit/secrets.toml
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.python-version
+
+# Notebooks (exploration only)
+notebooks/
+.ipynb_checkpoints/
+
+# macOS
+.DS_Store
+
+# Logs
+*.log
+
+# Working notes
+DRAFT*.md

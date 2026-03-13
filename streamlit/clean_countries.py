@@ -47,7 +47,7 @@ def clean_country(country:str)->str:
     country = exact_check(country, "the People’s Republic of China", 'China')
     country = exact_check(country, "the Democratic Republic of the Congo", 'Congo')
     country = exact_check(country, "the Republic of Cyprus", 'Cyprus')
-    country = exact_check(country, "the Kingdom of Morocco", 'Cyprus')
+    country = exact_check(country, "the Kingdom of Morocco", 'Morocco')
     country = exact_check(country, "The United Kingdom", england)
     country = exact_check(country, "the Republic of South Africa", 'South Africa')
     country = exact_check(country, "Algiers", 'Algeria')

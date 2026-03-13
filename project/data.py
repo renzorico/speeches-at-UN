@@ -1,8 +1,8 @@
 import pandas as pd
-from params import DATA_PATH
+from params import SOURCE_DATA_PATH
 
 def load_data():
-    return pd.read_csv(DATA_PATH)
+    return pd.read_csv(SOURCE_DATA_PATH)
 
 def harmonize_data(df):
     df.drop(["Year", "Session","session", "index", "year_iso", "ISO Code", "Unnamed: 6", 'Unnamed: 0'], axis=1, inplace=True)
@@ -27,14 +27,14 @@ def harmonize_data(df):
     for index, row in df.iterrows():
         iso_code = row['iso']
         if iso_code == '.DS':
-        # Drop the row if the ISO code is '.DS'
+            # Drop the row if the ISO code is '.DS'
             df = df.drop(index)
         else:
             duplicated_countries = duplicated_countries_per_iso.get(iso_code)
             if duplicated_countries is not None:
-            # Check if there are duplicated countries
+                # Check if there are duplicated countries
                 if len(duplicated_countries) > 1:
-                # Perform specific replacements for certain ISO codes
+                    # Perform specific replacements for certain ISO codes
                     if iso_code == 'BLR':
                         df.loc[index, 'country'] = 'Belarus'
                     elif iso_code == 'COG':
