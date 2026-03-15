@@ -15,10 +15,10 @@ PROJECT_ROOT = Path(__file__).parent.parent
 CLEAN_DATA_PATH = PROJECT_ROOT / 'data' / 'speeches_paragraphs.csv'
 MENTIONED_COUNTRIES_PATH = Path(__file__).parent / 'mentioned_countries_agg.csv'
 
-gcp_project = os.getenv('GCP_PROJECT_ID', 'your-gcp-project-id')
-dataset = os.getenv('BIGQUERY_DATASET', 'your_dataset_name')
-table = os.getenv('BIGQUERY_TABLE', 'your_table_name')
-BIG_QUERY = os.getenv('BIGQUERY_TABLE_FULL', f'`{gcp_project}.{dataset}.{table}`')
+gcp_project = os.getenv('GCP_PROJECT_ID') or st.secrets.get('GCP_PROJECT_ID', 'speeches-at-un')
+dataset = os.getenv('BIGQUERY_DATASET') or st.secrets.get('BIGQUERY_DATASET', 'un_speeches')
+table = os.getenv('BIGQUERY_TABLE') or st.secrets.get('BIGQUERY_TABLE', 'speeches_paragraphs')
+BIG_QUERY = os.getenv('BIGQUERY_TABLE_FULL') or st.secrets.get('BIGQUERY_TABLE_FULL', f'`{gcp_project}.{dataset}.{table}`')
 
 # ============================================================
 # BigQuery vs Local Mode Detection
