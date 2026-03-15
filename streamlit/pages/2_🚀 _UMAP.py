@@ -1,4 +1,5 @@
 import streamlit as st
+import pandas as pd
 import plotly.express as px
 st.set_page_config(layout="wide")
 
@@ -20,19 +21,19 @@ umap_topics = sorted([t for t in df['topic'].unique() if t not in NOISE_TOPICS])
 if 'umap_year' not in st.session_state:
     st.session_state['umap_year'] = 2000
 
-col_topic, col_prev, col_next, col_slider = st.columns([4, 1, 1, 6])
+col_topic, col_prev, col_slider, col_next = st.columns([4, 1, 6, 1])
 with col_topic:
     topic = st.selectbox('Topic', umap_topics, format_func=format_topic)
 with col_prev:
     st.write('')
     if st.button('◀', help='Previous year'):
         st.session_state['umap_year'] = max(1946, st.session_state['umap_year'] - 1)
+with col_slider:
+    year = st.slider('Year', min_value=1946, max_value=2021, key='umap_year')
 with col_next:
     st.write('')
     if st.button('▶', help='Next year'):
         st.session_state['umap_year'] = min(2021, st.session_state['umap_year'] + 1)
-with col_slider:
-    year = st.slider('Year', min_value=1946, max_value=2021, key='umap_year')
 
 filtered = df.loc[(df['year'] == year) & (df['topic'] == topic)].copy()
 
@@ -75,7 +76,25 @@ top10 = (
     .head(10)
     .index.tolist()
 )
-traj_df = topic_df[topic_df['country'].isin(top10)].sort_values('year')
+traj_base = topic_df[topic_df['country'].isin(top10)]
+all_years = sorted(topic_df['year'].unique())
+
+# Interpolate missing years so every country has a bubble in every frame
+filled = []
+for country in top10:
+    cdf = traj_base[traj_base['country'] == country].set_index('year')
+    continent = cdf['continent'].iloc[0]
+    cdf = cdf.reindex(all_years)
+    cdf[['umap_1', 'umap_2']] = cdf[['umap_1', 'umap_2']].interpolate(
+        method='linear', limit_direction='both'
+    )
+    # Missing years get count=1 so bubbles stay visible but small
+    cdf['count'] = cdf['count'].fillna(1)
+    cdf['country'] = country
+    cdf['continent'] = continent
+    filled.append(cdf.reset_index().rename(columns={'index': 'year'}))
+
+traj_df = pd.concat(filled).sort_values('year')
 
 x_pad = (traj_df['umap_1'].max() - traj_df['umap_1'].min()) * 0.08
 y_pad = (traj_df['umap_2'].max() - traj_df['umap_2'].min()) * 0.08
