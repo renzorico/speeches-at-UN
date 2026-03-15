@@ -62,8 +62,9 @@ st.plotly_chart(fig, use_container_width=True)
 # ── Topic trajectory ──────────────────────────────────────────────────────────
 st.header('Topic trajectory over time')
 st.caption(
-    "The 10 most active countries on this topic, animated from 1946 to 2021. "
-    "Countries close together used similar language that year. Press **▶** to animate."
+    "The 10 countries with the most speeches on this topic across all years, animated from 1946 to 2021. "
+    "**Bubble size** = paragraphs that year (small = few speeches that year). "
+    "Countries close together used similar language. Press **▶** to animate."
 )
 
 topic_df = df[(df['topic'] == topic) & (df['count'] > 0)].copy()
@@ -107,6 +108,7 @@ fig2 = px.scatter(
     animation_frame='year',
     animation_group='country',
     hover_name='country',
+    text='country',
     color='country',
     size='count',
     size_max=50,
@@ -116,7 +118,12 @@ fig2 = px.scatter(
     title=f'{format_topic(topic)} — top 10 countries, 1946–2021',
     labels={'umap_1': '', 'umap_2': ''},
 )
-fig2.update_layout(height=620, margin=dict(l=0, r=0, t=40, b=0))
+fig2.update_traces(textposition='middle center', textfont=dict(size=9, color='white'))
+# Apply text styling to every animation frame
+for frame in fig2.frames:
+    for trace in frame.data:
+        trace.update(textposition='middle center', textfont=dict(size=9, color='white'))
+fig2.update_layout(height=620, margin=dict(l=0, r=0, t=40, b=0), showlegend=False)
 fig2.update_xaxes(showgrid=False, zeroline=False, showticklabels=False, title='')
 fig2.update_yaxes(showgrid=False, zeroline=False, showticklabels=False, title='')
 fig2.layout.updatemenus[0].buttons[0].args[1]['frame']['duration'] = 700
