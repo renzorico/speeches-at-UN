@@ -21,19 +21,23 @@ umap_topics = sorted([t for t in df['topic'].unique() if t not in NOISE_TOPICS])
 if 'umap_year' not in st.session_state:
     st.session_state['umap_year'] = 2000
 
+def _prev_year():
+    st.session_state['umap_year'] = max(1946, st.session_state['umap_year'] - 1)
+
+def _next_year():
+    st.session_state['umap_year'] = min(2021, st.session_state['umap_year'] + 1)
+
 col_topic, col_prev, col_slider, col_next = st.columns([4, 1, 6, 1])
 with col_topic:
     topic = st.selectbox('Topic', umap_topics, format_func=format_topic)
 with col_prev:
     st.write('')
-    if st.button('◀', help='Previous year'):
-        st.session_state['umap_year'] = max(1946, st.session_state['umap_year'] - 1)
+    st.button('◀', on_click=_prev_year, help='Previous year')
 with col_slider:
     year = st.slider('Year', min_value=1946, max_value=2021, key='umap_year')
 with col_next:
     st.write('')
-    if st.button('▶', help='Next year'):
-        st.session_state['umap_year'] = min(2021, st.session_state['umap_year'] + 1)
+    st.button('▶', on_click=_next_year, help='Next year')
 
 filtered = df.loc[(df['year'] == year) & (df['topic'] == topic)].copy()
 
@@ -123,7 +127,7 @@ fig2.update_traces(textposition='middle center', textfont=dict(size=9, color='wh
 for frame in fig2.frames:
     for trace in frame.data:
         trace.update(textposition='middle center', textfont=dict(size=9, color='white'))
-fig2.update_layout(height=620, margin=dict(l=0, r=0, t=40, b=0), showlegend=False)
+fig2.update_layout(height=620, margin=dict(l=0, r=0, t=40, b=0))
 fig2.update_xaxes(showgrid=False, zeroline=False, showticklabels=False, title='')
 fig2.update_yaxes(showgrid=False, zeroline=False, showticklabels=False, title='')
 fig2.layout.updatemenus[0].buttons[0].args[1]['frame']['duration'] = 700
