@@ -6,9 +6,10 @@ from data import load_umap, format_topic
 
 st.title('Speech Similarity Map')
 st.caption(
-    "Each bubble represents one country's speeches on the selected topic in a given year. "
-    "**Proximity** = similar language used. "
-    "**Bubble size** = number of paragraphs. **Colour** = continent."
+    "Each bubble is one country's speeches on the selected topic in a given year. "
+    "**The axes have no fixed meaning** — positions are computed by UMAP, which groups countries "
+    "by how similar their language is. **Distance is what matters**: countries close together "
+    "spoke about the topic in a very similar way. Bubbles are labelled for the 8 most active speakers."
 )
 
 df = load_umap()
@@ -16,16 +17,33 @@ df = load_umap()
 NOISE_TOPICS = {'bla_bla', 'data_stats'}
 umap_topics = sorted([t for t in df['topic'].unique() if t not in NOISE_TOPICS])
 
-col1, col2 = st.columns(2)
-with col1:
-    topic = st.selectbox('Topic', umap_topics, format_func=format_topic)
-with col2:
-    year = st.slider('Year', min_value=1946, max_value=2021, value=2000)
+if 'umap_year' not in st.session_state:
+    st.session_state['umap_year'] = 2000
 
-filtered = df.loc[(df['year'] == year) & (df['topic'] == topic)]
+col_topic, col_prev, col_next, col_slider = st.columns([4, 1, 1, 6])
+with col_topic:
+    topic = st.selectbox('Topic', umap_topics, format_func=format_topic)
+with col_prev:
+    st.write('')
+    if st.button('◀', help='Previous year'):
+        st.session_state['umap_year'] = max(1946, st.session_state['umap_year'] - 1)
+with col_next:
+    st.write('')
+    if st.button('▶', help='Next year'):
+        st.session_state['umap_year'] = min(2021, st.session_state['umap_year'] + 1)
+with col_slider:
+    year = st.slider('Year', min_value=1946, max_value=2021, key='umap_year')
+
+filtered = df.loc[(df['year'] == year) & (df['topic'] == topic)].copy()
+
+# Label the 8 most active countries so positions are self-explanatory
+top8 = filtered.nlargest(8, 'count')['country']
+filtered['label'] = filtered['country'].where(filtered['country'].isin(top8), '')
+
 fig = px.scatter(
     filtered,
     x='umap_1', y='umap_2',
+    text='label',
     hover_name='country',
     color='continent',
     size='count',
@@ -34,6 +52,7 @@ fig = px.scatter(
     title=f'{format_topic(topic)} — {year}',
     labels={'umap_1': '', 'umap_2': ''},
 )
+fig.update_traces(textposition='top center', textfont_size=10)
 fig.update_layout(height=580, margin=dict(l=0, r=0, t=40, b=0))
 fig.update_xaxes(showgrid=False, zeroline=False, showticklabels=False, title='')
 fig.update_yaxes(showgrid=False, zeroline=False, showticklabels=False, title='')
