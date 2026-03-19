@@ -1,5 +1,5 @@
 import streamlit as st
-st.set_page_config(layout="wide")
+st.set_page_config(layout="wide", page_title="Mentioned Countries | UN Speeches", page_icon="🌍")
 import ast
 import pandas as pd
 import plotly.express as px
@@ -54,7 +54,11 @@ df = get_data()
 if df is None or df.empty:
     st.warning("No data available.")
 else:
-    topic = st.selectbox('Select topic', sorted(df['topic'].unique()), format_func=format_topic)
+    _all_topics = sorted(df['topic'].unique())
+    _topic_p = st.query_params.get("topic", "peace_war_security")
+    _topic_idx = _all_topics.index(_topic_p) if _topic_p in _all_topics else 0
+    topic = st.selectbox('Select topic', _all_topics, index=_topic_idx, format_func=format_topic)
+    st.query_params["topic"] = topic
     df_topic = df[df['topic'] == topic]
 
     # ── Line chart: top 5 countries over all years ────────────────────────────
@@ -74,12 +78,12 @@ else:
     )
     fig.update_layout(height=400, legend_title_text='')
 
-    st.caption("Click a point on the chart to update the map for that year.")
     event = st.plotly_chart(
         fig, use_container_width=True,
         on_select="rerun", selection_mode=["points"],
         key="country_line",
     )
+    st.caption("Click a point on the chart to update the map for that year.")
 
     # Determine selected year from click or fall back to latest
     selected_year = years[-1]
@@ -120,3 +124,14 @@ else:
             ),
         )
         st.plotly_chart(fig_map, use_container_width=True)
+
+import streamlit.components.v1 as components
+with st.expander("🔗 Share this view"):
+    components.html(
+        """<div style="display:flex;gap:8px;align-items:center;font-family:sans-serif;">
+        <input id="u" readonly style="flex:1;padding:6px 10px;border:1px solid #ccc;border-radius:6px;font-size:13px;background:#f9f9f9;">
+        <button onclick="navigator.clipboard.writeText(document.getElementById('u').value);this.textContent='✓ Copied';setTimeout(()=>this.textContent='Copy link',1500)"
+          style="padding:6px 14px;background:#009EDB;color:#fff;border:none;border-radius:6px;cursor:pointer;font-size:13px;white-space:nowrap;">Copy link</button>
+        </div><script>document.getElementById('u').value=window.location.href;</script>""",
+        height=50,
+    )

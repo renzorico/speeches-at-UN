@@ -3,7 +3,7 @@ import streamlit as st
 
 
 max_words = 50
-color_map = 'Dark2'
+color_map = 'Blues'
 
 def select_params(data_dict, key):
     years = sorted(list(set([k[0] for k in data_dict.keys()])))

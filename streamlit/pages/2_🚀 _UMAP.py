@@ -1,7 +1,7 @@
 import streamlit as st
 import pandas as pd
 import plotly.express as px
-st.set_page_config(layout="wide")
+st.set_page_config(layout="wide", page_title="Speech Similarity Map | UN Speeches", page_icon="🌍")
 
 from data import load_umap, format_topic
 
@@ -19,7 +19,7 @@ NOISE_TOPICS = {'bla_bla', 'data_stats'}
 umap_topics = sorted([t for t in df['topic'].unique() if t not in NOISE_TOPICS])
 
 if 'umap_year' not in st.session_state:
-    st.session_state['umap_year'] = 2000
+    st.session_state['umap_year'] = int(st.query_params.get("year", 2000))
 
 def _prev_year():
     st.session_state['umap_year'] = max(1946, st.session_state['umap_year'] - 1)
@@ -29,7 +29,9 @@ def _next_year():
 
 col_topic, col_prev, col_slider, col_next = st.columns([4, 1, 6, 1])
 with col_topic:
-    topic = st.selectbox('Topic', umap_topics, format_func=format_topic)
+    _topic_p = st.query_params.get("topic", umap_topics[0] if umap_topics else "")
+    _topic_idx = umap_topics.index(_topic_p) if _topic_p in umap_topics else 0
+    topic = st.selectbox('Topic', umap_topics, index=_topic_idx, format_func=format_topic)
 with col_prev:
     st.write('')
     st.button('◀', on_click=_prev_year, help='Previous year')
@@ -39,7 +41,13 @@ with col_next:
     st.write('')
     st.button('▶', on_click=_next_year, help='Next year')
 
+st.query_params["topic"] = topic
+st.query_params["year"]  = year
+
 filtered = df.loc[(df['year'] == year) & (df['topic'] == topic)].copy()
+
+if len(filtered) < 5:
+    st.info(f"Only {len(filtered)} {'country' if len(filtered) == 1 else 'countries'} discussed this topic in {year}. This is expected for niche topics or early years — try a different year or topic to see more activity.")
 
 # Label the 8 most active countries so positions are self-explanatory
 top8 = filtered.nlargest(8, 'count')['country']
@@ -134,3 +142,14 @@ fig2.layout.updatemenus[0].buttons[0].args[1]['frame']['duration'] = 700
 fig2.layout.updatemenus[0].buttons[0].args[1]['transition']['duration'] = 300
 
 st.plotly_chart(fig2, use_container_width=True)
+
+import streamlit.components.v1 as components
+with st.expander("🔗 Share this view"):
+    components.html(
+        """<div style="display:flex;gap:8px;align-items:center;font-family:sans-serif;">
+        <input id="u" readonly style="flex:1;padding:6px 10px;border:1px solid #ccc;border-radius:6px;font-size:13px;background:#f9f9f9;">
+        <button onclick="navigator.clipboard.writeText(document.getElementById('u').value);this.textContent='✓ Copied';setTimeout(()=>this.textContent='Copy link',1500)"
+          style="padding:6px 14px;background:#009EDB;color:#fff;border:none;border-radius:6px;cursor:pointer;font-size:13px;white-space:nowrap;">Copy link</button>
+        </div><script>document.getElementById('u').value=window.location.href;</script>""",
+        height=50,
+    )

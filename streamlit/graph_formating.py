@@ -16,6 +16,8 @@ def select_country(key):
 
 def generate_graph(selected_topic, selected_country):
     df = load_topics_meta()
+    normalize = st.toggle("Show as % of total paragraphs per year")
+
     if df is not None and 'topic' in df.columns:
         filtered = df[df['topic'].isin(selected_topic)]
         if selected_country:
@@ -24,6 +26,12 @@ def generate_graph(selected_topic, selected_country):
         else:
             filtered_df = filtered.groupby(['year', 'topic']).size().reset_index(name='count')
 
+        if normalize:
+            total_per_year = df[df['topic'] != 'bla_bla'].groupby('year').size().reset_index(name='total_year')
+            filtered_df = filtered_df.merge(total_per_year, on='year')
+            filtered_df['count'] = (filtered_df['count'] / filtered_df['total_year'] * 100).round(2)
+
+        y_label = '% of yearly paragraphs' if normalize else 'Paragraphs'
         topic_str = ', '.join([format_topic(t) for t in selected_topic])
         if selected_country:
             country_str = ', '.join(selected_country)
@@ -35,7 +43,7 @@ def generate_graph(selected_topic, selected_country):
         fig = px.line(
             filtered_df, x='year', y='count', color=hue,
             title=title,
-            labels={'year': 'Year', 'count': 'Paragraphs', 'topic': 'Topic', 'country': 'Country'},
+            labels={'year': 'Year', 'count': y_label, 'topic': 'Topic', 'country': 'Country'},
             markers=True,
             line_shape='spline',
         )

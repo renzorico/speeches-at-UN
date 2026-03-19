@@ -19,7 +19,7 @@ def split_extract(text, keyword):
             return sentences[first_sentence_index:last_sentence_index]
 
 
-def display_search(search_text, topic):
+def display_search(search_text, topic, sort_order='Most recent'):
     if st.button("Search"):
         df = load_clean_data()
         if df is not None:
@@ -45,12 +45,15 @@ def display_search(search_text, topic):
         if len(corpus_df) > 0:
             corpus_df['search_result'] = corpus_df['speeches'].apply(lambda x: split_extract(x, search_text))
             corpus_df = corpus_df[corpus_df['search_result'].notna()]
-            corpus_df = corpus_df.sort_values('year', ascending=False)
+
+            ascending = sort_order == 'Oldest first'
+            corpus_df = corpus_df.sort_values('year', ascending=ascending)
 
             total = len(corpus_df)
             MAX_RESULTS = 50
             corpus_df = corpus_df.head(MAX_RESULTS)
-            st.info(f"{total:,} paragraph(s) matched — showing the {min(total, MAX_RESULTS)} most recent.")
+            order_label = 'oldest' if ascending else 'most recent'
+            st.info(f"{total:,} paragraph(s) matched — showing the {min(total, MAX_RESULTS)} {order_label}.")
             i = 1
             for _, each in corpus_df.iterrows():
                 list_of_sentences = each['search_result']
@@ -65,6 +68,8 @@ def display_search(search_text, topic):
                     flags=re.IGNORECASE
                 )
                 st.markdown(f'''<h5><strong>{i}</strong>. Speech of {country} in <u>{year}</u>:</h5> \n\n -  {highlighted_text}''', unsafe_allow_html=True)
+                with st.expander("Show full paragraph"):
+                    st.write(each['speeches'])
                 i += 1
         else:
             st.warning('This word is not present in any speech.')

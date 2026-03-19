@@ -48,7 +48,7 @@ def display_topics():
         filtered_data = filtered_data[filtered_data['country'].isin(selected_countries)]
 
     topic_counts = filtered_data.groupby('topic').size().reset_index(name='count')
-    sorted_data = topic_counts.sort_values(by='count', ascending=False).head(7)
+    sorted_data = topic_counts.sort_values(by='count', ascending=False)
     sorted_data['topic_label'] = sorted_data['topic'].apply(format_topic)
 
     fig = px.bar(
@@ -58,7 +58,7 @@ def display_topics():
         color='count',
         color_continuous_scale='Blues',
     )
-    fig.update_layout(height=400, showlegend=False, yaxis={'categoryorder': 'total ascending'})
+    fig.update_layout(height=500, showlegend=False, yaxis={'categoryorder': 'total ascending'})
     fig.update_coloraxes(showscale=False)
     st.plotly_chart(fig, use_container_width=True)
 

@@ -3,6 +3,8 @@ import matplotlib.pyplot as plt
 from words_cloud import display_wordcloud, select_params
 from data import get_data_wordcloud
 
+st.set_page_config(layout="wide", page_title="Word Cloud | UN Speeches", page_icon="🌍")
+
 
 def wordcloud_main():
     st.title("Word Cloud")
@@ -21,3 +23,14 @@ def wordcloud_main():
         st.write(error_message)
 
 wordcloud_main()
+
+import streamlit.components.v1 as components
+with st.expander("🔗 Share this view"):
+    components.html(
+        """<div style="display:flex;gap:8px;align-items:center;font-family:sans-serif;">
+        <input id="u" readonly style="flex:1;padding:6px 10px;border:1px solid #ccc;border-radius:6px;font-size:13px;background:#f9f9f9;">
+        <button onclick="navigator.clipboard.writeText(document.getElementById('u').value);this.textContent='✓ Copied';setTimeout(()=>this.textContent='Copy link',1500)"
+          style="padding:6px 14px;background:#009EDB;color:#fff;border:none;border-radius:6px;cursor:pointer;font-size:13px;white-space:nowrap;">Copy link</button>
+        </div><script>document.getElementById('u').value=window.location.href;</script>""",
+        height=50,
+    )
