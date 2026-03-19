@@ -56,21 +56,25 @@ def main():
     client.create_dataset(dataset, exists_ok=True)
     print(f"Dataset ready: {gcp_project}.{dataset_id}")
 
-    # Upload CSV with auto-detected schema, replacing any existing table
+    # Read CSV via pandas first — avoids BigQuery's CSV parser choking on
+    # columns that contain Python list strings with single quotes (top_5_words,
+    # countries_recoded, etc.).  load_table_from_dataframe uses Arrow/Parquet
+    # serialisation internally so all string values pass through unchanged.
+    import pandas as pd
+
+    file_size_mb = CSV_PATH.stat().st_size / 1_048_576
+    print(f"Reading {CSV_PATH.name} ({file_size_mb:.0f} MB) into memory ...")
+    df = pd.read_csv(CSV_PATH, low_memory=False)
+    print(f"Loaded {len(df):,} rows, {len(df.columns)} columns.")
+
     job_config = bigquery.LoadJobConfig(
-        source_format=bigquery.SourceFormat.CSV,
-        skip_leading_rows=1,
-        autodetect=True,
         write_disposition=bigquery.WriteDisposition.WRITE_TRUNCATE,
     )
 
-    file_size_mb = CSV_PATH.stat().st_size / 1_048_576
-    print(f"Uploading {CSV_PATH.name} ({file_size_mb:.0f} MB) → {table_ref} ...")
-    print("This may take a few minutes — BigQuery is processing the file.")
+    print(f"Uploading → {table_ref} ...")
+    print("This may take a few minutes — BigQuery is processing the data.")
 
-    with open(CSV_PATH, "rb") as f:
-        job = client.load_table_from_file(f, table_ref, job_config=job_config)
-
+    job = client.load_table_from_dataframe(df, table_ref, job_config=job_config)
     job.result()  # blocks until done
 
     table = client.get_table(table_ref)
