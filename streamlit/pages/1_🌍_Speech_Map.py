@@ -15,6 +15,10 @@ def map_main():
         years = get_years()
         years = [int(y) for y in years]
 
+    if not years:
+        st.error("Could not load year data. Check your data source configuration.")
+        return
+
     _p = st.query_params
     _y0, _y1 = min(years), max(years)
     _start = max(_y0, min(_y1, int(_p.get("year_start", 2015))))

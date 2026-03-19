@@ -12,6 +12,9 @@ Defines functions to keep track of topics in texts and display them in histplots
 
 def select_info():
     years = get_years()
+    if not years:
+        st.warning("Year data not available.")
+        return [1946, 2021], []
     year_range = st.slider(
         "Select year range",
         min_value=int(min(years)),

@@ -101,17 +101,23 @@ def load_topics_meta():
 @st.cache_data()
 def get_years():
     """Get unique years"""
-    df = load_clean_data()
+    df = load_topics_meta()
     if df is not None:
         return sorted(df['year'].unique())
+    if not USE_LOCAL_MODE:
+        result = pd.DataFrame(run_query(f"SELECT DISTINCT year FROM {BIG_QUERY} ORDER BY year"))
+        return result['year'].tolist() if not result.empty else []
     return []
 
 @st.cache_data()
 def get_countries():
     """Get unique countries"""
-    df = load_clean_data()
+    df = load_topics_meta()
     if df is not None:
         return sorted(df['country'].dropna().unique())
+    if not USE_LOCAL_MODE:
+        result = pd.DataFrame(run_query(f"SELECT DISTINCT country FROM {BIG_QUERY} WHERE country IS NOT NULL ORDER BY country"))
+        return result['country'].tolist() if not result.empty else []
     return []
 
 TOPIC_WORDS_PATH = PROJECT_ROOT / 'raw_data' / 'topic_labels.csv'
