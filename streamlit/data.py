@@ -120,7 +120,7 @@ def get_countries():
         return result['country'].tolist() if not result.empty else []
     return []
 
-TOPIC_WORDS_PATH = PROJECT_ROOT / 'raw_data' / 'topic_labels.csv'
+TOPIC_WORDS_PATH = Path(__file__).parent / 'topic_labels.csv'
 
 @st.cache_data()
 def load_topic_words():

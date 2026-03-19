@@ -31,26 +31,39 @@ def display_topics():
     if df is not None and 'topic' in df.columns:
         feature_df = df[['year', 'country', 'topic']].dropna(subset=['topic'])
         feature_df = feature_df[feature_df['topic'] != 'bla_bla']
+        from_bq = False
     elif not USE_LOCAL_MODE:
-        query = f'''
-                SELECT year, country, topic
-                FROM {BIG_QUERY}
-                WHERE topic != 'bla_bla'
-                GROUP BY year, country, topic
-                ORDER BY year ASC
-                '''
-        feature_df = pd.DataFrame(run_query(query))
+        # Fetch pre-aggregated counts per year/country/topic so Python-side
+        # filtering stays fast without re-querying BigQuery on every widget change.
+        query = f"""
+            SELECT year, country, topic, COUNT(*) AS count
+            FROM {BIG_QUERY}
+            WHERE topic != 'bla_bla'
+            GROUP BY year, country, topic
+            ORDER BY year ASC
+        """
+        rows = run_query(query)
+        if not rows:
+            st.info("No data available.")
+            return
+        feature_df = pd.DataFrame(rows)
+        from_bq = True
     else:
         st.info("No data available.")
         return
 
     year_range, selected_countries = select_info()
-    filtered_data = feature_df[(feature_df['year'] >= year_range[0]) & (feature_df['year'] <= year_range[1])]
-
+    filtered_data = feature_df[
+        (feature_df['year'] >= year_range[0]) & (feature_df['year'] <= year_range[1])
+    ]
     if selected_countries:
         filtered_data = filtered_data[filtered_data['country'].isin(selected_countries)]
 
-    topic_counts = filtered_data.groupby('topic').size().reset_index(name='count')
+    if from_bq:
+        topic_counts = filtered_data.groupby('topic')['count'].sum().reset_index()
+    else:
+        topic_counts = filtered_data.groupby('topic').size().reset_index(name='count')
+
     sorted_data = topic_counts.sort_values(by='count', ascending=False)
     sorted_data['topic_label'] = sorted_data['topic'].apply(format_topic)
 
@@ -82,11 +95,8 @@ def select_topic_hist():
             return word_list, int(row.iloc[0]['count'])
         return [], 0
     elif not USE_LOCAL_MODE:
-        query = f'''SELECT year, country, topic, top_5_words
-            FROM {BIG_QUERY}
-            '''
-        data = pd.DataFrame(run_query(query))
-        topic = data[data['topic'] == selected_topic]
-        words = topic['top_5_words'].tolist()
-        word_list = ast.literal_eval(words[0])
-        return word_list, 0
+        count_rows = run_query(
+            f"SELECT COUNT(*) AS count FROM {BIG_QUERY} WHERE topic = '{selected_topic}'"
+        )
+        count = count_rows[0]['count'] if count_rows else 0
+        return [], count

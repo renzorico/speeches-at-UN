@@ -6,12 +6,15 @@ import pandas as pd
 
 def select_topic():
     topics = get_topic()
-    selected_topic = st.multiselect('Topic(s)', topics, format_func=format_topic)
+    default = ['peace_war_security'] if 'peace_war_security' in topics else (topics[:1] if topics else [])
+    selected_topic = st.multiselect('Topic(s)', topics, default=default, format_func=format_topic)
     return selected_topic
 
 def select_country(key):
     countries = get_countries()
-    selected_country = st.multiselect('Country(s)', countries, key=key)
+    default = ['United States of America'] if 'United States of America' in countries else (
+              ['United States'] if 'United States' in countries else [])
+    selected_country = st.multiselect('Country(s)', countries, default=default, key=key)
     return selected_country
 
 def generate_graph(selected_topic, selected_country):
