@@ -31,7 +31,7 @@ raw speeches (all_speeches.csv)
 
 **File:** `data/all_speeches.csv`
 
-This is the original dataset downloaded from the [UN General Debate Corpus](https://doi.org/10.7910/DVN/0TJX8Y), which contains full-text speeches delivered at the UN General Debate from 1946 to 2022.
+This is the original dataset downloaded from the [UN General Debate Corpus](https://doi.org/10.7910/DVN/0TJX8Y), which contains full-text speeches delivered at the UN General Debate from 1946 to 2021.
 
 Each row is one speech by one country in one year. Key columns in the raw file:
 

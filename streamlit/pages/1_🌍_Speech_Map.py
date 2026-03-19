@@ -64,7 +64,8 @@ def map_main():
 
     st.subheader(f"Countries focused on {format_topic(selected_topic)} — {start_year}–{end_year}")
     st.caption("Colour intensity shows the number of paragraphs classified under this topic. Hover over a country to see the count.")
-    plot_geo_features(df_map)
+    with st.spinner("Rendering map…"):
+        plot_geo_features(df_map)
 
 
 map_main()

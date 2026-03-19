@@ -61,6 +61,10 @@ def display_search(search_text, topic, sort_order='Most recent'):
                 country = each['country']
                 cleaned = [s for s in list_of_sentences if len(s) > 50]
                 joined_text = " ".join(cleaned)
+                # Strip any leading partial word/fragment before the first capital letter
+                capital_match = re.search(r'[A-Z]', joined_text)
+                if capital_match and capital_match.start() > 0:
+                    joined_text = joined_text[capital_match.start():]
                 highlighted_text = re.sub(
                     r'\b' + re.escape(search_text) + r'\b',
                     lambda m: f'<span style="background-color: #FFFF00"><strong>{m.group()}</strong></span>',

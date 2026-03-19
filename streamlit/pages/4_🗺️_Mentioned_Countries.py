@@ -3,7 +3,7 @@ st.set_page_config(layout="wide", page_title="Mentioned Countries | UN Speeches"
 import ast
 import pandas as pd
 import plotly.express as px
-from clean_countries import to_drop, clean_country
+from clean_countries import to_drop, clean_country, name_to_iso3
 from data import run_query, BIG_QUERY, load_clean_data, load_mentioned_countries_precomputed, USE_LOCAL_MODE, format_topic
 
 st.title('Countries Mentioned in Speeches')
@@ -79,7 +79,7 @@ else:
     fig.update_layout(height=400, legend_title_text='')
 
     event = st.plotly_chart(
-        fig, use_container_width=True,
+        fig, width='stretch',
         on_select="rerun", selection_mode=["points"],
         key="country_line",
     )
@@ -100,10 +100,13 @@ else:
     if df_map.empty:
         st.info("No country mentions recorded for this year and topic.")
     else:
+        df_map = df_map.copy()
+        df_map['iso3'] = df_map['country_mentioned'].apply(name_to_iso3)
+        df_map = df_map.dropna(subset=['iso3'])
         fig_map = px.scatter_geo(
             df_map,
-            locations='country_mentioned',
-            locationmode='country names',
+            locations='iso3',
+            locationmode='ISO-3',
             size='country_count',
             color='country_count',
             hover_name='country_mentioned',
@@ -123,4 +126,4 @@ else:
                 showframe=False,
             ),
         )
-        st.plotly_chart(fig_map, use_container_width=True)
+        st.plotly_chart(fig_map, width='stretch')

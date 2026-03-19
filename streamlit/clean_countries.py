@@ -57,3 +57,32 @@ def clean_country(country:str)->str:
 
 
     return country
+
+
+import pycountry
+
+_ISO3_OVERRIDES = {
+    'Russia': 'RUS',
+    'South Korea': 'KOR',
+    'North Korea': 'PRK',
+    'Congo': 'COD',
+    'Vietnam': 'VNM',
+    'Iran': 'IRN',
+    'Syria': 'SYR',
+    'Bolivia': 'BOL',
+    'Tanzania': 'TZA',
+    'Moldova': 'MDA',
+    'Czech Republic': 'CZE',
+    'Palestine': 'PSE',
+    'Venezuela': 'VEN',
+    'Libya': 'LBY',
+}
+
+
+def name_to_iso3(name: str):
+    if name in _ISO3_OVERRIDES:
+        return _ISO3_OVERRIDES[name]
+    try:
+        return pycountry.countries.lookup(name).alpha_3
+    except LookupError:
+        return None

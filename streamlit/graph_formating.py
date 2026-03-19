@@ -51,7 +51,7 @@ def generate_graph(selected_topic, selected_country):
             line_shape='spline',
         )
         fig.update_layout(height=500, legend_title_text='')
-        st.plotly_chart(fig, use_container_width=True)
+        st.plotly_chart(fig, width='stretch')
         return
 
     filterlist = ''
@@ -93,4 +93,4 @@ def generate_graph(selected_topic, selected_country):
         line_shape='spline',
     )
     fig.update_layout(height=500, legend_title_text='')
-    st.plotly_chart(fig, use_container_width=True)
+    st.plotly_chart(fig, width='stretch')

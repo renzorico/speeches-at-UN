@@ -27,7 +27,7 @@ def plot_geo_features(df):
         fitbounds="locations",
     )
     fig.update_layout(margin={"r":0,"t":0,"l":0,"b":0})
-    st.plotly_chart(fig, use_container_width=True)
+    st.plotly_chart(fig, width='stretch')
 
 
 def create_countries_plot(df, country_column, count_column):
@@ -52,4 +52,4 @@ def create_countries_plot(df, country_column, count_column):
         showcoastlines=False,
     )
     fig.update_layout(margin={"r":0,"t":0,"l":0,"b":0})
-    st.plotly_chart(fig, use_container_width=True)
+    st.plotly_chart(fig, width='stretch')

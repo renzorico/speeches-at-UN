@@ -76,7 +76,7 @@ def display_topics():
     )
     fig.update_layout(height=500, showlegend=False, yaxis={'categoryorder': 'total ascending'})
     fig.update_coloraxes(showscale=False)
-    st.plotly_chart(fig, use_container_width=True)
+    st.plotly_chart(fig, width='stretch')
 
 
 def select_topic_hist():
