@@ -69,7 +69,7 @@ fig.update_traces(textposition='top center', textfont_size=10)
 fig.update_layout(height=580, margin=dict(l=0, r=0, t=40, b=0))
 fig.update_xaxes(showgrid=False, zeroline=False, showticklabels=False, title='')
 fig.update_yaxes(showgrid=False, zeroline=False, showticklabels=False, title='')
-    st.plotly_chart(fig, width='stretch')
+st.plotly_chart(fig, width='stretch')
 
 # ── Topic trajectory ──────────────────────────────────────────────────────────
 st.header('Topic trajectory over time')
