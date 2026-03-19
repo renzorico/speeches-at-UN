@@ -167,17 +167,27 @@ def load_geo():
 @st.cache_data
 def get_data_wordcloud():
     """Get data for word cloud generation"""
-    df = load_clean_data()
-    if df is None:
-        return None, load_stopwords(), {}
-
-    # Group by year and country
-    wordcloud_data = df.groupby(['year', 'country'])['speeches'].apply(' '.join).reset_index()
-    wordcloud_data.columns = ['year', 'country', 'merged_speeches']
-
     stop_words = load_stopwords()
-    data_dict = wordcloud_data.set_index(['year', 'country'])['merged_speeches'].to_dict()
-    return wordcloud_data, stop_words, data_dict
+    df = load_clean_data()
+    if df is not None:
+        wordcloud_data = df.groupby(['year', 'country'])['speeches'].apply(' '.join).reset_index()
+        wordcloud_data.columns = ['year', 'country', 'merged_speeches']
+        data_dict = wordcloud_data.set_index(['year', 'country'])['merged_speeches'].to_dict()
+        return wordcloud_data, stop_words, data_dict
+    if not USE_LOCAL_MODE:
+        query = f"""
+            SELECT year, country, STRING_AGG(speeches, ' ') AS merged_speeches
+            FROM {BIG_QUERY}
+            WHERE topic != 'bla_bla' AND speeches IS NOT NULL
+            GROUP BY year, country
+            ORDER BY year, country
+        """
+        rows = run_query(query)
+        if rows:
+            wordcloud_data = pd.DataFrame(rows)
+            data_dict = wordcloud_data.set_index(['year', 'country'])['merged_speeches'].to_dict()
+            return wordcloud_data, stop_words, data_dict
+    return None, stop_words, {}
 
 
 @st.cache_data()
